@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="CancionServiceImplService" targetNamespace="http://impl.service.karaoke.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://impl.service.karaoke.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://service.karaoke.com/">
+  <wsdl:import namespace="http://service.karaoke.com/" location="CancionService.wsdl">
+    </wsdl:import>
+  <wsdl:binding name="CancionServiceImplServiceSoapBinding" type="ns1:CancionService">
+    <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="crearCancion">
+      <soap12:operation soapAction="" style="document"/>
+      <wsdl:input name="crearCancion">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="crearCancionResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CancionServiceImplService">
+    <wsdl:port name="CancionServiceImplPort" binding="tns:CancionServiceImplServiceSoapBinding">
+      <soap12:address location="http://localhost:8080/KaraokeService/services/CancionServiceImplPort"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
