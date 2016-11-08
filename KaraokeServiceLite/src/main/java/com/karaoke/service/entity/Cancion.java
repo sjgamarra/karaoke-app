@@ -19,13 +19,18 @@ public class Cancion implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
-	private String autor;
+	//private String autor;
 
 	private Integer estado;
 
 	private String genero;
 
+	@Column(unique=true)
 	private String nombre;
+	
+	private String artista;
+	
+	private String compositor;
 
 	//bi-directional many-to-one association to Pedido
 	@OneToMany(mappedBy="cancion")
@@ -42,13 +47,13 @@ public class Cancion implements Serializable {
 		this.id = id;
 	}
 
-	public String getAutor() {
-		return this.autor;
-	}
-
-	public void setAutor(String autor) {
-		this.autor = autor;
-	}
+//	public String getAutor() {
+//		return this.autor;
+//	}
+//
+//	public void setAutor(String autor) {
+//		this.autor = autor;
+//	}
 
 	public Integer getEstado() {
 		return this.estado;
@@ -94,6 +99,22 @@ public class Cancion implements Serializable {
 		pedido.setCancion(null);
 
 		return pedido;
+	}
+
+	public String getArtista() {
+		return artista;
+	}
+
+	public void setArtista(String artista) {
+		this.artista = artista;
+	}
+
+	public String getCompositor() {
+		return compositor;
+	}
+
+	public void setCompositor(String compositor) {
+		this.compositor = compositor;
 	}
 
 }
