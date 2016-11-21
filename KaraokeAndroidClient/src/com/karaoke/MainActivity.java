@@ -21,11 +21,11 @@ import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
-	AppSectionsPagerAdapter mAppSectionsPagerAdapter;
-	
-    ViewPager mViewPager;
+	private AppSectionsPagerAdapter mAppSectionsPagerAdapter;
 
-	
+	private ViewPager mViewPager;
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
