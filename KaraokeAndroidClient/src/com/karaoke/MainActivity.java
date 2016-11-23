@@ -1,6 +1,10 @@
 package com.karaoke;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+
+import com.karaoke.entity.Song;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -12,6 +16,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,12 +30,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 	private ViewPager mViewPager;
 
+	private List<Song> mSongList;
+	private List<Song> mMySongList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		// Create the adapter that will return a fragment for each of the three primary sections
         // of the app.
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
@@ -70,6 +77,21 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                             .setTabListener(this));
         }
 	}
+	
+	@Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        // When the given tab is selected, switch to the corresponding page in the ViewPager.
+        mViewPager.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -163,23 +185,4 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             return rootView;
         }
     }
-
-
-	@Override
-	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-		
-	}
 }

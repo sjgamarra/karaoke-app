@@ -1,6 +1,7 @@
 package com.karaoke;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,30 +14,25 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.karaoke.entity.Song;
+import com.karaoke.utils.HttpRequest;
+import com.karaoke.utils.HttpRequest.HttpRequestException;
 
-//public class SongListAdapter extends ArrayAdapter<Song>{
 	public class SongListAdapter extends BaseAdapter{
 
 	private Context mContext;
 	private List<Song> mSongList;
-	private List<Song> mRequestList;
-	private int layoutResourceId;
-
-
-//	public SongListAdapter(Context context, int layoutResourceId, ArrayList<Song> data) {
-//		super(context, layoutResourceId, data);
-//		this.layoutResourceId = layoutResourceId;
-//		this.mContext = context;
-//		this.mSongList = data;
-//	}
+	
+	public static final String TAG = "KARAOKE.ADAPTER";
+	public static final String DEVICE_ID = "android_demo";
+	public static final String URL_POST = "http://192.168.0.100:8080/pedido/";
 
 	// Constructor
 	public SongListAdapter(Context mContext, List<Song> mSongList) {
 		this.mContext = mContext;
 		this.mSongList = mSongList;
-		this.mRequestList = new ArrayList<Song>();
 	}
 
 	@Override
@@ -74,18 +70,38 @@ import com.karaoke.entity.Song;
 		//final int pos = position;
 		holder.btAdd.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v) {	
-				Log.d("KARAOKE", "Boton Actual------------");		
-				Log.d("KARAOKE", "Posicion:"+position+" Song:"+mSongList.get(position).getName());
-				
-				
+			public void onClick(View v) {
+				Log.d(TAG, "Posicion:"+position+" Song:"+mSongList.get(position).getName());
+				Song song = mSongList.get(position);			
 				mSongList.remove(position);
+				
+				//TODO: Post
+				//String url = String.format(URL_POST,song.getId());
+				String url = URL_POST + song.getId();
+				new AddSongTask().execute(url);
+				
 				notifyDataSetChanged();
 			}
 		});
 
 		return convertView;
 	}
+	
+	private class AddSongTask extends AsyncTask<String, Long, String> {
+		protected String doInBackground(String... urls) {
+			try {
+				Log.d(TAG, "Post - Request:"+urls[0]);
+				return HttpRequest.post(urls[0]).accept("application/json").body();			
+			} catch (HttpRequestException exception) {
+				return null;
+			}
+		}
+
+		protected void onPostExecute(String response) {
+			Log.d(TAG, "Post - Response:"+response);
+		}
+	}
+
 
 	class ViewHolder {
 		TextView tvName;
