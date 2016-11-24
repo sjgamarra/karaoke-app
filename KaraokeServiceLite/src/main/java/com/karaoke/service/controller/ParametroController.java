@@ -16,6 +16,7 @@ public class ParametroController {
 	
 	@RequestMapping(value = "/parametro/{nombre}", method = RequestMethod.GET)
 	public Parametro crearCancion(@PathVariable("nombre") String nombre){
+		System.out.println("Parametro nombre:"+nombre);
 		Parametro param = (parametroRepository.findByNombre(nombre)!=null)?parametroRepository.findByNombre(nombre).get(0):null;
 		return param;
 	}
