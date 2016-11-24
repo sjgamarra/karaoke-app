@@ -1,8 +1,16 @@
 package com.karaoke.service.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 
 /**
@@ -30,7 +38,7 @@ public class Cancion implements Serializable {
 	
 	private String artista;
 	
-	private String compositor;
+	private String album;
 
 	//bi-directional many-to-one association to Pedido
 	@OneToMany(mappedBy="cancion")
@@ -109,12 +117,13 @@ public class Cancion implements Serializable {
 		this.artista = artista;
 	}
 
-	public String getCompositor() {
-		return compositor;
+	public String getAlbum() {
+		return album;
 	}
 
-	public void setCompositor(String compositor) {
-		this.compositor = compositor;
+	public void setAlbum(String album) {
+		this.album = album;
 	}
 
+	
 }
