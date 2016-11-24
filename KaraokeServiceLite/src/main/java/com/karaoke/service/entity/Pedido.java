@@ -17,6 +17,7 @@ public class Pedido implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(name="\"dispositivoId\"")
@@ -27,7 +28,6 @@ public class Pedido implements Serializable {
 	@Column(name="\"fechaHora\"", columnDefinition= "TIMESTAMP WITHOUT TIME ZONE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fechaHora;
-	//private Timestamp fechaHora;
 
 	//bi-directional many-to-one association to Cancion
 	@ManyToOne

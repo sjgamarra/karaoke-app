@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -22,7 +23,9 @@ import org.springframework.util.MultiValueMap;
 
 import com.google.gson.Gson;
 import com.karaoke.service.entity.Cancion;
+import com.karaoke.service.entity.Pedido;
 import com.karaoke.service.repository.CancionRepository;
+import com.karaoke.service.repository.PedidoRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -33,10 +36,14 @@ public class KaraokeServiceLiteApplicationTests {
     private CancionRepository cancionRepository;
 	
 	@Autowired
+    private PedidoRepository pedidoRepository;
+	
+	@Autowired
     private MockMvc mockMvc;
 	
 	@Test
 	public void testRepository() {
+		/*
 		Cancion cancion = new Cancion();
 		cancion.setNombre("TestSpring5");
 		//cancion.setAutor("TestSpring5");
@@ -44,12 +51,28 @@ public class KaraokeServiceLiteApplicationTests {
 		cancion.setEstado(1);
 		
 		//Test Repository
-		//cancionRepository.save(cancion);
+		cancionRepository.save(cancion);
+		*/
+		
+		
+		
+		//Cancion cancion = cancionRepository.findOne(1L);
+		
+		Cancion cancion = new Cancion();
+		cancion.setId(2L);		
+		Pedido pedido = new Pedido();
+		pedido.setDispositivoId("DEMO");
+		pedido.setCancion(cancion);
+		pedido.setEstado(1);
+		pedido.setFechaHora(new Date());
+		
+		pedidoRepository.save(pedido);
+		
 	}
 	
 	 @Test
 	 public void batchCreation() throws Exception {
-			mockMvc.perform(post("/cargarMusicaBatch/E:\\Proyectos P\\Music Samples")).andExpect(status().isOk());
+			//mockMvc.perform(post("/cargarMusicaBatch/E:\\Proyectos P\\Music Samples")).andExpect(status().isOk());
 	}
 	
 	 @Test
