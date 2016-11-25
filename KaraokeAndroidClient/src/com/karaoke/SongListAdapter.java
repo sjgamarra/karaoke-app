@@ -27,7 +27,7 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 	
 	public static final String TAG = "KARAOKE.ADAPTER";
 	public static final String DEVICE_ID = "android_demo";
-	public static final String URL_POST = "http://192.168.0.100:8080/pedido/";
+	public static final String URL_POST = "http://192.168.0.100:8080/pedido/%s/%s";
 
 	// Constructor
 	public SongListAdapter(Context mContext, List<Song> mSongList) {
@@ -67,17 +67,15 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 		holder.tvArtist.setText(mSongList.get(position).getArtist());
 		holder.tvName.setText(mSongList.get(position).getName());	
 
-		//final int pos = position;
 		holder.btAdd.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "Posicion:"+position+" Song:"+mSongList.get(position).getName());
+				
 				Song song = mSongList.get(position);			
 				mSongList.remove(position);
 				
-				//TODO: Post
-				//String url = String.format(URL_POST,song.getId());
-				String url = URL_POST + song.getId();
+				String url = String.format(URL_POST, DEVICE_ID, song.getId().toString());
 				new AddSongTask().execute(url);
 				
 				notifyDataSetChanged();
