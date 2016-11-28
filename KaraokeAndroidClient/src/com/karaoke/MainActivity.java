@@ -130,27 +130,35 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         	Bundle args;
             switch (i) {
                 case 0:
-                    // The first section of the app is the most interesting -- it offers
-                    // a launchpad into the other demonstrations in this example application.
-                    //return new LaunchpadSectionFragment();
+                	Fragment allFragment = new SongsFragment();
+                	args = new Bundle();
+                	allFragment.setArguments(args);
+                    return allFragment;
+                case 1:
                 	Fragment songsFragment = new SongsFragment();
                 	args = new Bundle();
                 	songsFragment.setArguments(args);
                     return songsFragment;
+                case 2:
+                	Fragment requestFragment = new SongsFragment();
+                	args = new Bundle();
+                	requestFragment.setArguments(args);
+                    return requestFragment;
 
                 default:
+                	return null;
                     // The other sections of the app are dummy placeholders.
-                    Fragment fragment = new DummySectionFragment();
-                    args = new Bundle();
-                    args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, i + 1);
-                    fragment.setArguments(args);
-                    return fragment;
+//                    Fragment fragment = new DummySectionFragment();
+//                    args = new Bundle();
+//                    args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, i + 1);
+//                    fragment.setArguments(args);
+//                    return fragment;
             }
         }
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -158,9 +166,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         	Locale l = Locale.getDefault();
 			switch (position) {
 			case 0:
-				return getString(R.string.tab_tittle_songs).toUpperCase(l);
+				return getString(R.string.tab_tittle_hallsongs).toUpperCase(l);
 			case 1:
-				return getString(R.string.tab_tittle_requests).toUpperCase(l);
+				return getString(R.string.tab_tittle_allsongs).toUpperCase(l);
+			case 2:
+				return getString(R.string.tab_tittle_mysongs).toUpperCase(l);
 			}
 			return null;
             //return "Section " + (position + 1);

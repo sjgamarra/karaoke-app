@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.karaoke.entity.Song;
+import com.karaoke.utils.Commons;
 import com.karaoke.utils.HttpRequest;
 import com.karaoke.utils.HttpRequest.HttpRequestException;
 
@@ -24,10 +25,6 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 
 	private Context mContext;
 	private List<Song> mSongList;
-	
-	public static final String TAG = "KARAOKE.ADAPTER";
-	public static final String DEVICE_ID = "android_demo";
-	public static final String URL_POST = "http://192.168.0.100:8080/pedido/%s/%s";
 
 	// Constructor
 	public SongListAdapter(Context mContext, List<Song> mSongList) {
@@ -70,12 +67,12 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 		holder.btAdd.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "Posicion:"+position+" Song:"+mSongList.get(position).getName());
+				Log.d(Commons.ADAPTER_TAG, "Posicion:"+position+" Song:"+mSongList.get(position).getName());
 				
 				Song song = mSongList.get(position);			
 				mSongList.remove(position);
 				
-				String url = String.format(URL_POST, DEVICE_ID, song.getId().toString());
+				String url = String.format(Commons.URL_REQUEST_POST, Commons.DEVICE_ID, song.getId().toString());
 				new AddSongTask().execute(url);
 				
 				notifyDataSetChanged();
@@ -88,7 +85,7 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 	private class AddSongTask extends AsyncTask<String, Long, String> {
 		protected String doInBackground(String... urls) {
 			try {
-				Log.d(TAG, "Post - Request:"+urls[0]);
+				Log.d(Commons.ADAPTER_TAG, "Post - Request:"+urls[0]);
 				return HttpRequest.post(urls[0]).accept("application/json").body();			
 			} catch (HttpRequestException exception) {
 				return null;
@@ -96,7 +93,7 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 		}
 
 		protected void onPostExecute(String response) {
-			Log.d(TAG, "Post - Response:"+response);
+			Log.d(Commons.ADAPTER_TAG, "Post - Response:"+response);
 		}
 	}
 

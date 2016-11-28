@@ -1,5 +1,6 @@
 package com.karaoke.service.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.beust.jcommander.internal.Console;
 import com.karaoke.service.entity.Cancion;
 import com.karaoke.service.entity.Parametro;
+import com.karaoke.service.entity.Song;
 import com.karaoke.service.repository.CancionRepository;
 
 @RestController
@@ -24,23 +26,33 @@ public class CancionController {
 		cancionRepository.save(cancion);
 	}
 	
-	@RequestMapping(value = "/cancion/{nombre}", method = RequestMethod.GET)
-	public List<Cancion> buscarCancion(@PathVariable("nombre") String nombre){
-		List<Cancion> canciones = cancionRepository.findByNombre(nombre);
-		return canciones;
-	}
-	
-	
-	@RequestMapping(value = "/song/{id}", method = RequestMethod.POST)
-	public void crearSong(@PathVariable("id") long id){
-		System.out.println("LLEGUE AL SERVIDOR CON EL ID:"+id);
-		//cancionRepository.save(cancion)0;
-	}
+	@RequestMapping(value = "/cancion/{genero}/{nombre}", method = RequestMethod.GET)
+	public List<Song> buscarCancion(
+			@PathVariable("nombre") String genre,
+			@PathVariable("nombre") String name){
 		
-	
-//	@RequestMapping(value = "/canciones", method = RequestMethod.POST)
-//	public void crearCancionDesdeLista(@RequestBody List<Cancion> cancionLst){
-//		//guardar lista de canciones
-//		cancionLst.stream().forEach(c -> cancionRepository.save(c));
-//	}
+		List<Cancion> canciones = new ArrayList<Cancion>();
+		
+		//deberia hacerse en 1 sola consulta
+		if(genre == "all" && name == "all"){
+			canciones = (List<Cancion>) cancionRepository.findAll();
+		}else if(genre == "all" && name != "all"){
+			canciones = (List<Cancion>) cancionRepository.findByNombreContaining(name);
+		}else if(genre != "all" && name == "all" ){
+			
+		}
+		
+		List<Song> songs = new ArrayList<Song>();
+		for(Cancion cancion : canciones){
+			System.out.println(cancion.getNombre());
+			Song song = new Song(cancion.getId(), 
+					cancion.getArtista(), 
+					cancion.getNombre(), 
+					cancion.getGenero(), 
+					cancion.getEstado());
+			songs.add(song);
+		}
+		
+		return songs;
+	}
 }

@@ -1,7 +1,6 @@
-package com.karaoke.entity;
+package com.karaoke.service.entity;
 
 public class Song {
-	
 	private Long id;
 	private String name;
 	private String artist;
