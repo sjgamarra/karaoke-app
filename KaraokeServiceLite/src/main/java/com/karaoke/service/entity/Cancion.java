@@ -27,14 +27,14 @@ public class Cancion implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
-	//private String autor;
-
 	private Integer estado;
 
 	private String genero;
 
 	@Column(unique=true)
-	private String nombre;
+	private String nombreArchivo;
+	
+	private String titulo;
 	
 	private String artista;
 	
@@ -71,12 +71,20 @@ public class Cancion implements Serializable {
 		this.genero = genero;
 	}
 
-	public String getNombre() {
-		return this.nombre;
+	public String getNombreArchivo() {
+		return nombreArchivo;
 	}
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+	public void setNombreArchivo(String nombreArchivo) {
+		this.nombreArchivo = nombreArchivo;
+	}
+
+	public String getTitulo() {
+		return titulo;
+	}
+
+	public void setTitulo(String titulo) {
+		this.titulo = titulo;
 	}
 
 //	public List<Pedido> getPedidos() {

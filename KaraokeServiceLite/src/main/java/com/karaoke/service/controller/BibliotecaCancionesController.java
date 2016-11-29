@@ -75,7 +75,8 @@ public class BibliotecaCancionesController {
 				    input.close();
 			    
 				    Cancion cancion = new Cancion();
-				    cancion.setNombre(KaraokeUtils.checkAtributo(pathArchivo.getFileName().toString()));
+				    cancion.setNombreArchivo(KaraokeUtils.checkAtributo(pathArchivo.getFileName().toString()));
+				    cancion.setTitulo(metadata.get("title"));
 				    cancion.setAlbum(KaraokeUtils.checkAtributo(metadata.get("xmpDM:album")));
 				    cancion.setGenero(KaraokeUtils.checkAtributo(metadata.get("xmpDM:genre")));
 				    cancion.setArtista(KaraokeUtils.checkAtributo(metadata.get("xmpDM:artist")));

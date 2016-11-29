@@ -88,10 +88,22 @@ public class GestorBibliotecaCanciones {
 			    // List all metadata
 			    
 			    Cancion cancion = new Cancion();
-			    cancion.setNombre(KaraokeUtils.checkAtributo(pathArchivo.getFileName().toString()));
+			    cancion.setNombreArchivo(KaraokeUtils.checkAtributo(pathArchivo.getFileName().toString()));
+			    cancion.setTitulo(metadata.get("title"));
 			    cancion.setCompositor(KaraokeUtils.checkAtributo(metadata.get("xmpDM:composer")));
 			    cancion.setGenero(KaraokeUtils.checkAtributo(metadata.get("xmpDM:genre")));
 			    cancion.setArtista(KaraokeUtils.checkAtributo(metadata.get("xmpDM:artist")));
+			    
+			    
+			    // Retrieve the necessary info from metadata
+		        // Names - title, xmpDM:artist etc. - mentioned below may differ based
+		        System.out.println("----------------------------------------------");
+		        System.out.println("Title: " + metadata.get("title"));
+		        System.out.println("Artists: " + metadata.get("xmpDM:artist"));
+		        System.out.println("Composer : "+metadata.get("xmpDM:composer"));
+		        System.out.println("Genre : "+metadata.get("xmpDM:genre"));
+		        System.out.println("Album : "+metadata.get("xmpDM:album"));
+			    
 			    
 			    //Llamar al servicio rest para almacenar la cancion
 			    final String uri = CONTEXT_SERVER+"cancion";

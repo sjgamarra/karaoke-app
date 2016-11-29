@@ -1,33 +1,32 @@
 package com.karaoke.entity;
 
 public class Song {
-	
+
 	private Long id;
-	private String name;
+	private String title;
 	private String artist;
 	private String genre;
 	private Integer status;
-	
-	public Song(Long id, String artist, String name, String genre, Integer status) {
+
+	public Song(Long id, String title, String artist, String genre, Integer status) {
 		super();
 		this.id = id;
-		this.name = name;
+		this.title = title;
 		this.artist = artist;
 		this.genre = genre;
 		this.status = status;
 	}
-	
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getName() {
-		return name;
+	public String getTitle() {
+		return title;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 	public String getArtist() {
 		return artist;
@@ -46,5 +45,6 @@ public class Song {
 	}
 	public void setStatus(Integer status) {
 		this.status = status;
-	}		
+	}
+		
 }
