@@ -41,8 +41,8 @@ public class Cancion implements Serializable {
 	private String album;
 
 	//bi-directional many-to-one association to Pedido
-	@OneToMany(mappedBy="cancion")
-	private List<Pedido> pedidos;
+//	@OneToMany(mappedBy="cancion")
+//	private List<Pedido> pedidos;
 
 	public Cancion() {
 	}
@@ -87,27 +87,27 @@ public class Cancion implements Serializable {
 		this.titulo = titulo;
 	}
 
-	public List<Pedido> getPedidos() {
-		return this.pedidos;
-	}
-
-	public void setPedidos(List<Pedido> pedidos) {
-		this.pedidos = pedidos;
-	}
-
-	public Pedido addPedido(Pedido pedido) {
-		getPedidos().add(pedido);
-		pedido.setCancion(this);
-
-		return pedido;
-	}
-
-	public Pedido removePedido(Pedido pedido) {
-		getPedidos().remove(pedido);
-		pedido.setCancion(null);
-
-		return pedido;
-	}
+//	public List<Pedido> getPedidos() {
+//		return this.pedidos;
+//	}
+//
+//	public void setPedidos(List<Pedido> pedidos) {
+//		this.pedidos = pedidos;
+//	}
+//
+//	public Pedido addPedido(Pedido pedido) {
+//		getPedidos().add(pedido);
+//		pedido.setCancion(this);
+//
+//		return pedido;
+//	}
+//
+//	public Pedido removePedido(Pedido pedido) {
+//		getPedidos().remove(pedido);
+//		pedido.setCancion(null);
+//
+//		return pedido;
+//	}
 
 	public String getArtista() {
 		return artista;
