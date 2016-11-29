@@ -32,15 +32,17 @@ public class CancionController {
 			@PathVariable("nombre") String name){
 		
 		List<Cancion> canciones = new ArrayList<Cancion>();
+	
 		
 		//deberia hacerse en 1 sola consulta
-		if(genre == "all" && name == "all"){
-			canciones = (List<Cancion>) cancionRepository.findAll();
-		}else if(genre == "all" && name != "all"){
-			canciones = (List<Cancion>) cancionRepository.findByNombreContaining(name);
-		}else if(genre != "all" && name == "all" ){
-			
-		}
+		canciones = (List<Cancion>) cancionRepository.findByNombreContaining(name);
+//		if(genre == "all" && name == "all"){
+//			canciones = (List<Cancion>) cancionRepository.findAll();
+//		}else if(genre == "all" && name != "all"){
+//			canciones = (List<Cancion>) cancionRepository.findByNombreContaining(name);
+//		}else if(genre != "all" && name == "all" ){
+//			
+//		}
 		
 		List<Song> songs = new ArrayList<Song>();
 		for(Cancion cancion : canciones){
