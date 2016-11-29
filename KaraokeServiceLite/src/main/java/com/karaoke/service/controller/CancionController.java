@@ -26,7 +26,7 @@ public class CancionController {
 	
 	@RequestMapping(value = "/cancion/{nombre}", method = RequestMethod.GET)
 	public List<Cancion> buscarCancion(@PathVariable("nombre") String nombre){
-		List<Cancion> canciones = cancionRepository.findByNombre(nombre);
+		List<Cancion> canciones = cancionRepository.findByNombreArchivo(nombre);
 		return canciones;
 	}
 	
