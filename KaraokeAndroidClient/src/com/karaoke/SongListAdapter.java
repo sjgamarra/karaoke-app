@@ -1,6 +1,8 @@
 package com.karaoke;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.karaoke.entity.Song;
+import com.karaoke.utils.Commons;
 import com.karaoke.utils.HttpRequest;
 import com.karaoke.utils.HttpRequest.HttpRequestException;
 
@@ -24,15 +27,16 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 
 	private Context mContext;
 	private List<Song> mSongList;
+	private boolean mMySongs;
 	
-	public static final String TAG = "KARAOKE.ADAPTER";
-	public static final String DEVICE_ID = "android_demo";
-	public static final String URL_POST = "http://192.168.0.100:8080/pedido/";
+	private int mSongSelectedPos;
+	private Song mSongSelected;
 
 	// Constructor
-	public SongListAdapter(Context mContext, List<Song> mSongList) {
+	public SongListAdapter(Context mContext, List<Song> mSongList, boolean mMySongs) {
 		this.mContext = mContext;
 		this.mSongList = mSongList;
+		this.mMySongs = mMySongs;
 	}
 
 	@Override
@@ -49,6 +53,11 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 	public long getItemId(int position) {
 		return mSongList.get(position).getId();
 	}
+	
+	public void setSongList(List<Song> songs){
+		this.mSongList = songs;
+		notifyDataSetChanged();
+	}
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
@@ -58,39 +67,44 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 			convertView = View.inflate(mContext, R.layout.item_song_list, null);
 			holder.tvArtist = (TextView) convertView.findViewById(R.id.tv_artist);
 			holder.tvName = (TextView) convertView.findViewById(R.id.tv_name);
-			holder.btAdd = (Button) convertView.findViewById(R.id.bt_add);
+			holder.btAction = (Button) convertView.findViewById(R.id.bt_action);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		
 		holder.tvArtist.setText(mSongList.get(position).getArtist());
-		holder.tvName.setText(mSongList.get(position).getTitle());	
+		holder.tvName.setText(mSongList.get(position).getTitle());
+		holder.btAction.setText((mMySongs?"-":"+"));
 
-		//final int pos = position;
-		holder.btAdd.setOnClickListener(new View.OnClickListener() {
+		holder.btAction.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "Posicion:"+position+" Song:"+mSongList.get(position).getTitle());
-				Song song = mSongList.get(position);			
-				mSongList.remove(position);
+				mSongSelectedPos = position;
+				mSongSelected = mSongList.get(mSongSelectedPos);			
 				
-				//TODO: Post
-				//String url = String.format(URL_POST,song.getId());
-				String url = URL_POST + song.getId();
-				new AddSongTask().execute(url);
-				
-				notifyDataSetChanged();
+				AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
+				builder
+					.setMessage("¿Está seguro?")
+					.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int id) {
+							new CancelSongTask().execute(String.format(Commons.URL_REQUEST_POST,Commons.DEVICE_ID, mSongSelected.getId()));
+							mSongList.remove(mSongSelectedPos);
+							notifyDataSetChanged();
+						}})
+					.setNegativeButton("No", null)
+					.show();
 			}
 		});
 
 		return convertView;
 	}
 	
-	private class AddSongTask extends AsyncTask<String, Long, String> {
+	private class CancelSongTask extends AsyncTask<String, Long, String> {
 		protected String doInBackground(String... urls) {
 			try {
-				Log.d(TAG, "Post - Request:"+urls[0]);
+				Log.d(Commons.TAG, "Post - Request:"+urls[0]);
 				return HttpRequest.post(urls[0]).accept("application/json").body();			
 			} catch (HttpRequestException exception) {
 				return null;
@@ -98,7 +112,7 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 		}
 
 		protected void onPostExecute(String response) {
-			Log.d(TAG, "Post - Response:"+response);
+			Log.d(Commons.TAG, "Post - Response:"+response);
 		}
 	}
 
@@ -106,7 +120,7 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 	class ViewHolder {
 		TextView tvName;
 		TextView tvArtist;
-		Button btAdd;
+		Button btAction;
 		Button btRemove;
 	}
 

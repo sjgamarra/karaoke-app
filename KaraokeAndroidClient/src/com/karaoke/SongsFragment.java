@@ -9,19 +9,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class SongsFragment extends Fragment {
 
 	private EditText etSearch;
 	private ListView lvSongs;
-	private Button btAdd;
     private SongListAdapter adapter;
     private List<Song> mSongList;
 	
@@ -33,7 +29,6 @@ public class SongsFragment extends Fragment {
 		
 		this.etSearch = (EditText)rootView.findViewById(R.id.et_search);
 		this.lvSongs = (ListView)rootView.findViewById(R.id.lv_songs);
-		this.btAdd = (Button)rootView.findViewById(R.id.bt_add);
 
 		//demo de canciones  ------------------------------------------------------------------
 		this.mSongList = new ArrayList<Song>();
@@ -47,16 +42,15 @@ public class SongsFragment extends Fragment {
 		this.mSongList.add(new Song((long)8, "Usher", "I Don't Mind", "Metal", 1));
 		//-------------------------------------------------------------------------------------
 		
-		adapter = new SongListAdapter(getActivity().getApplicationContext(), mSongList);
+		adapter = new SongListAdapter(getActivity().getApplicationContext(), mSongList, false);
 		this.lvSongs.setAdapter(adapter);
-        this.lvSongs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Do something
-            }
-        });
+//        this.lvSongs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                //Do something
+//            }
+//        });
 	
 		return rootView;
-
 	}
 }
