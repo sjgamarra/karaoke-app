@@ -11,13 +11,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.karaoke.service.entity.Cancion;
+import com.karaoke.service.entity.Pedido;
 import com.karaoke.service.entity.Song;
 import com.karaoke.service.repository.CancionRepository;
+import com.karaoke.service.repository.PedidoRepository;
 
 @RestController
 public class CancionController {
 	@Autowired
     private CancionRepository cancionRepository;
+	
+	@Autowired
+    private PedidoRepository pedidoRepository;
 	
 	@RequestMapping(value = "/cancion", method = RequestMethod.POST)
 	public void crearCancion(@RequestBody Cancion cancion){
@@ -46,6 +51,7 @@ public class CancionController {
 		}
 		
 		return songs;
-
 	}
+	
+	
 }

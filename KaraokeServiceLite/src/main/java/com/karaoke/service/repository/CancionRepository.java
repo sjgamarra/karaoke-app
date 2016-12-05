@@ -13,8 +13,7 @@ public interface CancionRepository extends CrudRepository<Cancion, Long>{
 	List<Cancion> findByNombreArchivo(String nombre);
 	//List<Cancion> findByNombre(String nombre);
 	List<Cancion> findByTituloContaining(String nombre);
-	List<Cancion> findByGeneroAndTituloLike(String genero, String nombre);
-	
+	//List<Cancion> findByGeneroAndNombreLike(String genero, String nombre);
 	List<Cancion> findTop100ByOrderByIdAsc();
 
 }
