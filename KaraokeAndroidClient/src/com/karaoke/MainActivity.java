@@ -1,15 +1,22 @@
 package com.karaoke;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.karaoke.entity.Song;
+import com.karaoke.utils.Commons;
+import com.karaoke.utils.HttpRequest;
+import com.karaoke.utils.HttpRequest.HttpRequestException;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -29,9 +36,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	private AppSectionsPagerAdapter mAppSectionsPagerAdapter;
 
 	private ViewPager mViewPager;
-
-	private List<Song> mSongList;
-	private List<Song> mMySongList;
+	
+	private List<Song> mySongs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -112,9 +118,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		return super.onOptionsItemSelected(item);
 	}
 	
-	
-	
-	
 	/**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the primary
      * sections of the app.
@@ -130,27 +133,28 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         	Bundle args;
             switch (i) {
                 case 0:
-                    // The first section of the app is the most interesting -- it offers
-                    // a launchpad into the other demonstrations in this example application.
-                    //return new LaunchpadSectionFragment();
+                	Fragment allSongsFragment = new AllSongsFragment();
+                	args = new Bundle();
+                	allSongsFragment.setArguments(args);
+                    return allSongsFragment;
+                case 1:
                 	Fragment songsFragment = new SongsFragment();
                 	args = new Bundle();
                 	songsFragment.setArguments(args);
                     return songsFragment;
-
+                case 2:
+                	Fragment mySongsFragment = new MySongsFragment();               	
+                	args = new Bundle();
+                	mySongsFragment.setArguments(args);
+                    return mySongsFragment;
                 default:
-                    // The other sections of the app are dummy placeholders.
-                    Fragment fragment = new DummySectionFragment();
-                    args = new Bundle();
-                    args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, i + 1);
-                    fragment.setArguments(args);
-                    return fragment;
+                    return null;
             }
         }
-
+        
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -158,31 +162,15 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         	Locale l = Locale.getDefault();
 			switch (position) {
 			case 0:
-				return getString(R.string.tab_tittle_songs).toUpperCase(l);
+				//return getString(R.string.tab_tittle_songs).toUpperCase(l);
+				return "Sala";
 			case 1:
-				return getString(R.string.tab_tittle_requests).toUpperCase(l);
+				return "Canciones";
+			case 2:
+				return "Mi Lista";
+			default:
+				return null;
 			}
-			return null;
-            //return "Section " + (position + 1);
-        }
-    }
-    
-    
-    /**
-     * A dummy fragment representing a section of the app, but that simply displays dummy text.
-     */
-    public static class DummySectionFragment extends Fragment {
-
-        public static final String ARG_SECTION_NUMBER = "section_number";
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_section_dummy, container, false);
-            Bundle args = getArguments();
-            ((TextView) rootView.findViewById(android.R.id.text1)).setText(
-                    getString(R.string.dummy_section_text, args.getInt(ARG_SECTION_NUMBER)));
-            return rootView;
         }
     }
 }
