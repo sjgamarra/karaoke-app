@@ -1,24 +1,33 @@
 package com.karaoke.service.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.karaoke.service.entity.Cancion;
 import com.karaoke.service.entity.Pedido;
+import com.karaoke.service.repository.CancionRepository;
 import com.karaoke.service.repository.ParametroRepository;
 import com.karaoke.service.repository.PedidoRepository;
+import com.karaoke.service.utils.EstadoPedido;
+import com.karaoke.service.utils.KaraokeUtils;
+import com.karaoke.service.utils.PedidoManager;
 
 @RestController
 public class PedidoController {
 	
 	@Autowired
     private PedidoRepository pedidoRepository;
+	
+	@Autowired
+    private CancionRepository cancionRepository;
 	
 	@Autowired
 	private ParametroRepository parametroRepository;
@@ -50,26 +59,59 @@ public class PedidoController {
 	 * @return
 	 */
 	@RequestMapping(value = "/pedido", method = RequestMethod.GET)
-	public Pedido obtenerPedido(String ultimoDispositivo){
-		Pedido pedido = pedidoRepository.findFirstByEstadoAndDispositivoIdNotOrderByIdAsc(1,ultimoDispositivo);
-		//Si no se encuentra un pedido de una mesa diferente obtenemos el siguiente pedido sin importar el id del dispositivo
-		if(pedido == null)
-		{
-			pedido = pedidoRepository.findFirstByEstadoOrderByIdAsc(1);
-		}
+	public Pedido obtenerPedido(){
+		//Pedido pedido = obtenerPedidosSurtidosEnOrden();
+		Pedido pedido = obtenerPedidoCircularmente();
 		
 		//Si no se encuentran pedidos obtener una musica aleatoria para reproducir
 		if(pedido == null)
 		{
 			//TODO: crear un pedido aleatorio
+			List<Cancion> lstCancion =  cancionRepository.findTop100ByOrderByIdAsc();
+			int posRandon = (int)Math.random()*(lstCancion.size()-1);
+			Cancion cancionRandom = lstCancion.get(posRandon);
+			pedido = new Pedido();
+			pedido.setCancion(cancionRandom);
 		}
 		
 		return pedido;
 	}
 
+	private Pedido obtenerPedidoCircularmente(){
+		Pedido pedido = null;
+		
+		PedidoManager pedidoManager = PedidoManager.getInstance();
+		for(int i = 0 ; i < pedidoManager.getNumDispositivos(); i++){
+			String dispositivoId = pedidoManager.getNextDispositivo();
+			pedido = pedidoRepository.findFirstByEstadoAndDispositivoIdOrderByIdAsc(EstadoPedido.EN_COLA, dispositivoId);
+			if(pedido != null)	break;
+		}
+		
+		return pedido;
+	}
+	
+	private Pedido obtenerPedidosSurtidosEnOrden(){
+		//obtenemos el pedido anterior para luego obtener un pedido que sea de otra mesa
+		Pedido pedidoAnterior = pedidoRepository.findFirstByEstado(EstadoPedido.EN_REPRODUCCION);
+		Pedido pedido = null;
+		if(pedidoAnterior!=null)
+		{
+			pedido = pedidoRepository.findFirstByEstadoAndDispositivoIdNotOrderByIdAsc(EstadoPedido.EN_COLA,pedidoAnterior.getDispositivoId());
+		}
+		//Si no se encuentra un pedido de una mesa diferente obtenemos el siguiente pedido sin importar el id del dispositivo
+		if(pedido == null)
+		{
+			pedido = pedidoRepository.findFirstByEstadoOrderByIdAsc(EstadoPedido.EN_COLA);
+		}
+		
+		return pedido;
+	}
 	
 	@RequestMapping(value = "/pedido", method = RequestMethod.PUT)
-	public void actualizarPedido(@RequestBody Pedido pedido){
-		pedidoRepository.save(pedido);
+	//public void actualizarPedido(@RequestParam  ("pedidoString") Pedido pedido){
+	public void actualizarPedido(@RequestBody  Pedido pedido){
+		//no actualizar en caso el pedido no tenga un dispositivoId Asociado (Pedido Random)
+		if(!KaraokeUtils.isEmpty(pedido.getDispositivoId()))
+			pedidoRepository.save(pedido);
 	}
 }

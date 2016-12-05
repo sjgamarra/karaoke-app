@@ -31,7 +31,7 @@ public class CancionController {
 			@PathVariable("nombre") String name){
 		
 		//deberia hacerse en 1 sola consulta
-		List<Cancion> canciones = (List<Cancion>) cancionRepository.findByNombreContaining(name);
+		List<Cancion> canciones = (List<Cancion>) cancionRepository.findByTituloContaining(name);
 		
 		List<Song> songs = new ArrayList<Song>();
 		for(Cancion cancion : canciones){

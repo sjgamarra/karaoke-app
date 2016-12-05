@@ -120,7 +120,7 @@ public class KaraokeServiceLiteApplicationTests {
 		String directorioCanciones = parametroRepository.
 					findByNombre("DIRECTORIO_CANCIONES").get(0).getValor();
 		
-		Pedido pedido = pedidoController.obtenerPedido("MESA2");
+		Pedido pedido = pedidoController.obtenerPedido();
 		rutaArchivo = directorioCanciones + pedido.getCancion().getNombreArchivo();
 		System.out.println("Ruta: " + rutaArchivo);
 		
@@ -154,7 +154,7 @@ public class KaraokeServiceLiteApplicationTests {
 			Gson gson = new Gson();
 			String json = gson.toJson(cancion1);
 			
-		  // mockMvc.perform(post("/cancion").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
+		   //mockMvc.perform(post("/cancion").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
 	}
 	 
 	 @Test
