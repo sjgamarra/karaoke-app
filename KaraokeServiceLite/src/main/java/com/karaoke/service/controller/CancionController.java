@@ -29,18 +29,25 @@ public class CancionController {
 		cancionRepository.save(cancion);
 	}
 	
-
+	
+	/***
+	 * Obtener cancion en funcion a genero y nombre, ignorando mayusculas.
+	 * @param genre
+	 * @param name
+	 * @return
+	 */
 	@RequestMapping(value = "/cancion/{genero}/{nombre}", method = RequestMethod.GET)
 	public List<Song> buscarCancion(
-			@PathVariable("nombre") String genre,
+			@PathVariable("genero") String genre,
 			@PathVariable("nombre") String name){
+	
+		genre = genre.equals("all")?"":genre;
+		name = name.equals("all")?"":name;
 		
-		//deberia hacerse en 1 sola consulta
-		List<Cancion> canciones = (List<Cancion>) cancionRepository.findByTituloContaining(name);
+		List<Cancion> canciones = (List<Cancion>) cancionRepository.findByGeneroContainingIgnoreCaseAndTituloContainingIgnoreCase(genre, name);
 		
 		List<Song> songs = new ArrayList<Song>();
 		for(Cancion cancion : canciones){
-			System.out.println(cancion.getTitulo());
 			Song song = new Song(
 					cancion.getId(),
 					cancion.getTitulo(), 

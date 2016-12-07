@@ -28,13 +28,24 @@ public class MySongsFragment extends Fragment {
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		
+		Log.d(Commons.TAG, "MySongsFragment - onCreateView");
 		 		
 		View rootView = inflater.inflate(R.layout.fragment_my_songs, container, false);
 		this.lvSongs = (ListView)rootView.findViewById(R.id.lv_songs);
 		this.mMySongList = new ArrayList<Song>();
 		
-		String mySongsUrl = String.format(Commons.URL_REQUEST_GET,Commons.DEVICE_ID);	
-		new GetMySongsTask().execute(mySongsUrl);
+		String mySongsUrl = String.format(Commons.URL_REQUEST_GET,Commons.DEVICE_ID);
+		//asincrono
+		//new GetMySongsTask().execute(mySongsUrl);
+		
+		//sincrono
+		String response = HttpRequest.get(mySongsUrl).accept("application/json").body();
+		Gson gson = new Gson();
+		Type listType = new TypeToken<List<Song>>(){}.getType();
+		mMySongList = gson.fromJson(response, listType);
+		adapter = new SongListAdapter(getActivity().getApplicationContext(), mMySongList, false, "-");
+		lvSongs.setAdapter(adapter);
 		
 		return rootView;
 	}
@@ -56,7 +67,7 @@ public class MySongsFragment extends Fragment {
 			Type listType = new TypeToken<List<Song>>(){}.getType();
 			mMySongList = gson.fromJson(response, listType);
 			
-			adapter = new SongListAdapter(getActivity().getApplicationContext(), mMySongList, true);
+			adapter = new SongListAdapter(getActivity().getApplicationContext(), mMySongList, true, "-");
 			lvSongs.setAdapter(adapter);
 			
 		}

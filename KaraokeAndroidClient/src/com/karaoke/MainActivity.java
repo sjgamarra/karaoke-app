@@ -18,6 +18,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -43,6 +44,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
 		// Create the adapter that will return a fragment for each of the three primary sections
         // of the app.
@@ -68,6 +72,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 // When swiping between different app sections, select the corresponding tab.
                 // We can also use ActionBar.Tab#select() to do this if we have a reference to the
                 // Tab.
+//            	Log.d(Commons.TAG, "MainActivity - setSelectedNavigationItem + "+ position);
                 actionBar.setSelectedNavigationItem(position);
             }
         });
@@ -130,20 +135,24 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         @Override
         public Fragment getItem(int i) {
+        	Log.d(Commons.TAG, "MainActivity - GET-ITEM-FRAGMENT - " + i);
         	Bundle args;
             switch (i) {
                 case 0:
-                	Fragment allSongsFragment = new AllSongsFragment();
+                	Log.d(Commons.TAG, "MainActivity - AllSongsFragment");
+                	AllSongsFragment allSongsFragment = new AllSongsFragment();
                 	args = new Bundle();
                 	allSongsFragment.setArguments(args);
                     return allSongsFragment;
                 case 1:
+                	Log.d(Commons.TAG, "MainActivity - SongsFragment");
                 	Fragment songsFragment = new SongsFragment();
                 	args = new Bundle();
                 	songsFragment.setArguments(args);
                     return songsFragment;
                 case 2:
-                	Fragment mySongsFragment = new MySongsFragment();               	
+                	Log.d(Commons.TAG, "MainActivity - MySongsFragment");
+                	MySongsFragment mySongsFragment = new MySongsFragment();               	
                 	args = new Bundle();
                 	mySongsFragment.setArguments(args);
                     return mySongsFragment;
@@ -159,10 +168,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         @Override
         public CharSequence getPageTitle(int position) {
-        	Locale l = Locale.getDefault();
 			switch (position) {
 			case 0:
-				//return getString(R.string.tab_tittle_songs).toUpperCase(l);
 				return "Sala";
 			case 1:
 				return "Canciones";

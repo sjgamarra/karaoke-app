@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Karaoke Cliente</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-       <string name="dummy_section_text">Section %1d is just a dummy section.</string>
-    
-    
-    <string name="tab_tittle_songs">Canciones</string>
-    <string name="tab_tittle_requests">Pedidos</string>
+    <string name="app_name">VAG Karaoke</string>
+    <string name="action_settings">Config</string>
 
 </resources>

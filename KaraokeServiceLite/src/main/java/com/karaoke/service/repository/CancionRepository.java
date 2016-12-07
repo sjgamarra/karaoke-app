@@ -10,10 +10,13 @@ import com.karaoke.service.entity.Pedido;
 
 public interface CancionRepository extends CrudRepository<Cancion, Long>{
 
+	
 	List<Cancion> findByNombreArchivo(String nombre);
 	//List<Cancion> findByNombre(String nombre);
-	List<Cancion> findByTituloContaining(String nombre);
-	//List<Cancion> findByGeneroAndNombreLike(String genero, String nombre);
+	
+	//Obtener canciones por Genero y Titulo 
+	List<Cancion> findByGeneroContainingIgnoreCaseAndTituloContainingIgnoreCase(String genero, String nombre);
+	
 	List<Cancion> findTop100ByOrderByIdAsc();
 
 }

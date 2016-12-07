@@ -27,16 +27,19 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 
 	private Context mContext;
 	private List<Song> mSongList;
-	private boolean mMySongs;
+
+	private boolean mButtonHidden;
+	private String mButtonText;
 	
 	private int mSongSelectedPos;
 	private Song mSongSelected;
 
 	// Constructor
-	public SongListAdapter(Context mContext, List<Song> mSongList, boolean mMySongs) {
+	public SongListAdapter(Context mContext, List<Song> mSongList, boolean mButtonHidden, String mButtonText) {
 		this.mContext = mContext;
 		this.mSongList = mSongList;
-		this.mMySongs = mMySongs;
+		this.mButtonHidden = mButtonHidden;
+		this.mButtonText = mButtonText;
 	}
 
 	@Override
@@ -67,6 +70,7 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 			convertView = View.inflate(mContext, R.layout.item_song_list, null);
 			holder.tvArtist = (TextView) convertView.findViewById(R.id.tv_artist);
 			holder.tvName = (TextView) convertView.findViewById(R.id.tv_name);
+			holder.tvGenre = (TextView) convertView.findViewById(R.id.tv_genre);
 			holder.btAction = (Button) convertView.findViewById(R.id.bt_action);
 			convertView.setTag(holder);
 		} else {
@@ -75,7 +79,11 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 		
 		holder.tvArtist.setText(mSongList.get(position).getArtist());
 		holder.tvName.setText(mSongList.get(position).getTitle());
-		holder.btAction.setText((mMySongs?"-":"+"));
+		holder.tvGenre.setText(mSongList.get(position).getGenre());
+		
+		//controlando el boton.
+		holder.btAction.setVisibility(mButtonHidden?View.GONE:View.VISIBLE);
+		holder.btAction.setText(mButtonText);
 
 		holder.btAction.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -89,6 +97,9 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 					.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int id) {
+							
+							
+							
 							new CancelSongTask().execute(String.format(Commons.URL_REQUEST_POST,Commons.DEVICE_ID, mSongSelected.getId()));
 							mSongList.remove(mSongSelectedPos);
 							notifyDataSetChanged();
@@ -120,6 +131,7 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 	class ViewHolder {
 		TextView tvName;
 		TextView tvArtist;
+		TextView tvGenre;
 		Button btAction;
 		Button btRemove;
 	}

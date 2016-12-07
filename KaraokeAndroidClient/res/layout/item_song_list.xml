@@ -3,26 +3,30 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="10dp" 
+    android:padding="5dp"
     >
 
     <LinearLayout
-        android:layout_width="240dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nombre Cancion"
-            android:textColor="#00a7f5"
+            android:textColor="#FFFFFF"
             android:textSize="20sp" />
         <TextView
             android:id="@+id/tv_artist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nombre Artista"
-            android:textColor="#f92a3f"
+            android:textColor="#007373"
+            android:textSize="14sp" />
+        <TextView
+            android:id="@+id/tv_genre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#165656"
             android:textSize="14sp" />
     </LinearLayout>
 
@@ -35,9 +39,9 @@
         <Button
             android:id="@+id/bt_action"
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:text="+" />
+            android:textSize="24dp"
+            />
     </LinearLayout>
-
 </LinearLayout>
