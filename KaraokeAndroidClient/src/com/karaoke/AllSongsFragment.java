@@ -42,7 +42,7 @@ public class AllSongsFragment extends Fragment {
 		Gson gson = new Gson();
 		Type listType = new TypeToken<List<Song>>(){}.getType();
 		mSongList = gson.fromJson(response, listType);
-		adapter = new SongListAdapter(getActivity().getApplicationContext(), mSongList, true, "");
+		adapter = new SongListAdapter(getActivity().getApplicationContext(), mSongList, false,false);
 		lvSongs.setAdapter(adapter);
 		
 		//asincrono
@@ -50,26 +50,26 @@ public class AllSongsFragment extends Fragment {
 		return rootView;
 	}
 	
-	private class GetAllSongsTask extends AsyncTask<String, Long, String> {
-		protected String doInBackground(String... urls) {
-			try {
-				Log.d(Commons.TAG, "GetAllSongs - Request:"+urls[0]);
-				return HttpRequest.get(urls[0]).accept("application/json").body();			
-			} catch (HttpRequestException exception) {
-				return null;
-			}
-		}
-
-		protected void onPostExecute(String response) {
-			Log.d(Commons.TAG, "GetAllSongs - Response:"+response);
-
-			Gson gson = new Gson();
-			Type listType = new TypeToken<List<Song>>(){}.getType();
-			mSongList = gson.fromJson(response, listType);
-			
-			adapter = new SongListAdapter(getActivity().getApplicationContext(), mSongList, false, "");
-			lvSongs.setAdapter(adapter);
-			
-		}
-	}
+//	private class GetAllSongsTask extends AsyncTask<String, Long, String> {
+//		protected String doInBackground(String... urls) {
+//			try {
+//				Log.d(Commons.TAG, "GetAllSongs - Request:"+urls[0]);
+//				return HttpRequest.get(urls[0]).accept("application/json").body();			
+//			} catch (HttpRequestException exception) {
+//				return null;
+//			}
+//		}
+//
+//		protected void onPostExecute(String response) {
+//			Log.d(Commons.TAG, "GetAllSongs - Response:"+response);
+//
+//			Gson gson = new Gson();
+//			Type listType = new TypeToken<List<Song>>(){}.getType();
+//			mSongList = gson.fromJson(response, listType);
+//			
+//			adapter = new SongListAdapter(getActivity().getApplicationContext(), mSongList, false, false);
+//			lvSongs.setAdapter(adapter);
+//			
+//		}
+//	}
 }

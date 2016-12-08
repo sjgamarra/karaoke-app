@@ -34,6 +34,8 @@ public class PedidoController {
 	
 	@Autowired
 	private ParametroRepository parametroRepository;
+
+	////SERGIO!!!
 	
 	/***
 	 * Obtiene pedidos en funcion al dispositvo.
@@ -49,62 +51,86 @@ public class PedidoController {
 		
 		System.out.println("PedidosController - obtenerPedidos");
 		
-		List<Pedido> pedidos = new ArrayList<Pedido>();
-		
-		if(dispositivoId.equals("all")){
-			//aca deberia obtener la lista armada de la sala.
-			pedidos = (List<Pedido>) pedidoRepository.findByEstado(1);
-		}else{
-			pedidos = (List<Pedido>) pedidoRepository.findByDispositivoIdAndEstado(dispositivoId, 1);
-		}
-		
 		List<Song> songs = new ArrayList<Song>();
-		for(Pedido pedido : pedidos){
-			Song song = new Song(
-					pedido.getCancion().getId(),
-					pedido.getCancion().getTitulo(), 
-					pedido.getCancion().getArtista(), 
-					pedido.getCancion().getGenero(), 
-					pedido.getCancion().getEstado());
-			songs.add(song);
+		
+		try{
+			List<Pedido> pedidos = new ArrayList<Pedido>();
+			if(dispositivoId.equals("all")){
+				//TODO: aca deberia obtener la lista armada de la sala.
+				pedidos = (List<Pedido>) pedidoRepository.findByEstado(1);
+			}else{
+				pedidos = (List<Pedido>) pedidoRepository.findByDispositivoIdAndEstado(dispositivoId, 1);
+			}
+			
+			for(Pedido pedido : pedidos){
+				Song song = new Song(
+						pedido.getCancion().getId(),
+						pedido.getCancion().getTitulo(), 
+						pedido.getCancion().getArtista(), 
+						pedido.getCancion().getGenero(), 
+						pedido.getCancion().getEstado());
+				songs.add(song);
+			}
+		}catch (Exception e){
+			//log
 		}
 		
 		return songs;
 	}
 	
+	
+	/***
+	 * Realizar pedidos por dispositivo y cancion
+	 * @param dispositivoId
+	 * @param cancionId
+	 */
 	@RequestMapping(value = "/pedidos/{dispositivoId}/{cancionId}", method = RequestMethod.POST)
+	public void crearPedido(
+			@PathVariable("dispositivoId") String dispositivoId, 
+			@PathVariable("cancionId") long cancionId){
+		
+		System.out.println("PedidoController - crearPedido");
+		
+		try{
+			Cancion cancion = new Cancion();
+			cancion.setId(cancionId);
+			
+			Pedido pedido = new Pedido();
+			pedido.setDispositivoId(dispositivoId);
+			pedido.setCancion(cancion);
+			pedido.setEstado(1);	//pendiente
+			pedido.setFechaHora(new Date());
+			
+			pedidoRepository.save(pedido);
+		}catch(Exception e){
+			//log
+		}
+	}
+	
+	/***
+	 * Cancela pedido activo por dispositivo y cancion
+	 * @param dispositivoId
+	 * @param cancionId
+	 */
+	@RequestMapping(value = "/pedidos/{dispositivoId}/{cancionId}", method = RequestMethod.PUT)
 	public void cancelarPedidos(
 			@PathVariable("dispositivoId") String dispositivoId,
 			@PathVariable("cancionId") long cancionId){
 		
 		System.out.println("PedidosController - cancelarPedido");
 		
-		Cancion cancion = new Cancion();
-		cancion.setId(cancionId);
-		Pedido pedido = pedidoRepository.findByDispositivoIdAndCancion(dispositivoId, cancion);
-		
-		System.out.println("Pedido Id:"+pedido.getId());
-		
-		pedido.setEstado(4);
-		pedidoRepository.save(pedido);
+		try{
+			Cancion cancion = new Cancion();
+			cancion.setId(cancionId);
+			Pedido pedido = pedidoRepository.findByDispositivoIdAndCancion(dispositivoId, cancion);	
+			pedido.setEstado(4); //cancelado
+			pedidoRepository.save(pedido);
+		}catch(Exception e){
+			//log
+		}
 	}
 	
-	@RequestMapping(value = "/pedido/{dispositivoId}/{cancionId}", method = RequestMethod.POST)
-	public void crearPedido(@PathVariable("dispositivoId") String dispositivoId, @PathVariable("cancionId") long cancionId){
-		
-		System.out.println("PedidoController - crearPedido");
-		
-		Cancion cancion = new Cancion();
-		cancion.setId(cancionId);
-		
-		Pedido pedido = new Pedido();
-		pedido.setDispositivoId(dispositivoId);
-		pedido.setCancion(cancion);
-		pedido.setEstado(1);
-		pedido.setFechaHora(new Date());
-		
-		pedidoRepository.save(pedido);
-	}
+	////LUCHO!
 	
 	/**
 	 *  Se consideran los siguientes estados de pedido:

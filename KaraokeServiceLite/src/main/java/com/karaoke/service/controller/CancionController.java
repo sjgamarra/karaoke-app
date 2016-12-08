@@ -1,5 +1,6 @@
 package com.karaoke.service.controller;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,32 +30,38 @@ public class CancionController {
 		cancionRepository.save(cancion);
 	}
 	
-	
 	/***
 	 * Obtener cancion en funcion a genero y nombre, ignorando mayusculas.
-	 * @param genre
-	 * @param name
+	 * @param genero
+	 * @param nombre
 	 * @return
 	 */
-	@RequestMapping(value = "/cancion/{genero}/{nombre}", method = RequestMethod.GET)
+	@RequestMapping(value = "/canciones/{genero}/{nombre}", method = RequestMethod.GET)
 	public List<Song> buscarCancion(
-			@PathVariable("genero") String genre,
-			@PathVariable("nombre") String name){
+			@PathVariable("genero") String genero,
+			@PathVariable("nombre") String nombre){
 	
-		genre = genre.equals("all")?"":genre;
-		name = name.equals("all")?"":name;
-		
-		List<Cancion> canciones = (List<Cancion>) cancionRepository.findByGeneroContainingIgnoreCaseAndTituloContainingIgnoreCase(genre, name);
-		
 		List<Song> songs = new ArrayList<Song>();
-		for(Cancion cancion : canciones){
-			Song song = new Song(
-					cancion.getId(),
-					cancion.getTitulo(), 
-					cancion.getArtista(), 
-					cancion.getGenero(), 
-					cancion.getEstado());
-			songs.add(song);
+		
+		try{
+			genero = genero.equals("all")?"":URLDecoder.decode(genero, "UTF-8");
+			nombre = nombre.equals("all")?"": URLDecoder.decode(nombre, "UTF-8");
+			
+			System.out.println("parametros:"+genero+":"+nombre);
+			
+			List<Cancion> canciones = (List<Cancion>) cancionRepository.findByGeneroContainingIgnoreCaseAndTituloContainingIgnoreCaseOrArtistaContainingIgnoreCase(genero, nombre, nombre);
+			
+			for(Cancion cancion : canciones){
+				Song song = new Song(
+						cancion.getId(),
+						cancion.getTitulo(), 
+						cancion.getArtista(), 
+						cancion.getGenero(), 
+						cancion.getEstado());
+				songs.add(song);
+			}
+		}catch(Exception e){
+			//log
 		}
 		
 		return songs;

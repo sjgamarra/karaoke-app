@@ -44,32 +44,32 @@ public class MySongsFragment extends Fragment {
 		Gson gson = new Gson();
 		Type listType = new TypeToken<List<Song>>(){}.getType();
 		mMySongList = gson.fromJson(response, listType);
-		adapter = new SongListAdapter(getActivity().getApplicationContext(), mMySongList, false, "-");
+		adapter = new SongListAdapter(getActivity().getApplicationContext(), mMySongList, true,false);
 		lvSongs.setAdapter(adapter);
 		
 		return rootView;
 	}
 	
-	private class GetMySongsTask extends AsyncTask<String, Long, String> {
-		protected String doInBackground(String... urls) {
-			try {
-				Log.d(Commons.TAG, "GetMySongs - Request:"+urls[0]);
-				return HttpRequest.get(urls[0]).accept("application/json").body();			
-			} catch (HttpRequestException exception) {
-				return null;
-			}
-		}
-
-		protected void onPostExecute(String response) {
-			Log.d(Commons.TAG, "GetMySongs - Response:"+response);
-
-			Gson gson = new Gson();
-			Type listType = new TypeToken<List<Song>>(){}.getType();
-			mMySongList = gson.fromJson(response, listType);
-			
-			adapter = new SongListAdapter(getActivity().getApplicationContext(), mMySongList, true, "-");
-			lvSongs.setAdapter(adapter);
-			
-		}
-	}
+//	private class GetMySongsTask extends AsyncTask<String, Long, String> {
+//		protected String doInBackground(String... urls) {
+//			try {
+//				Log.d(Commons.TAG, "GetMySongs - Request:"+urls[0]);
+//				return HttpRequest.get(urls[0]).accept("application/json").body();			
+//			} catch (HttpRequestException exception) {
+//				return null;
+//			}
+//		}
+//
+//		protected void onPostExecute(String response) {
+//			Log.d(Commons.TAG, "GetMySongs - Response:"+response);
+//
+//			Gson gson = new Gson();
+//			Type listType = new TypeToken<List<Song>>(){}.getType();
+//			mMySongList = gson.fromJson(response, listType);
+//			
+//			adapter = new SongListAdapter(getActivity().getApplicationContext(), mMySongList, true, "-");
+//			lvSongs.setAdapter(adapter);
+//			
+//		}
+//	}
 }

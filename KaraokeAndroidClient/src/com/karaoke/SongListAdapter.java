@@ -28,18 +28,18 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 	private Context mContext;
 	private List<Song> mSongList;
 
-	private boolean mButtonHidden;
-	private String mButtonText;
+	private boolean mButtonShow;
+	private boolean mButtonAdd;
 	
 	private int mSongSelectedPos;
 	private Song mSongSelected;
 
 	// Constructor
-	public SongListAdapter(Context mContext, List<Song> mSongList, boolean mButtonHidden, String mButtonText) {
+	public SongListAdapter(Context mContext, List<Song> mSongList, boolean mButtonHidden, boolean mButtonAdd) {
 		this.mContext = mContext;
 		this.mSongList = mSongList;
-		this.mButtonHidden = mButtonHidden;
-		this.mButtonText = mButtonText;
+		this.mButtonShow = mButtonHidden;
+		this.mButtonAdd = mButtonAdd;
 	}
 
 	@Override
@@ -82,8 +82,8 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 		holder.tvGenre.setText(mSongList.get(position).getGenre());
 		
 		//controlando el boton.
-		holder.btAction.setVisibility(mButtonHidden?View.GONE:View.VISIBLE);
-		holder.btAction.setText(mButtonText);
+		holder.btAction.setVisibility(mButtonShow ? View.VISIBLE : View.GONE);
+		holder.btAction.setText(mButtonAdd ? "+" : "-");
 
 		holder.btAction.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -93,15 +93,17 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 				
 				AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
 				builder
-					.setMessage("¿Está seguro?")
+					.setMessage(mButtonAdd?"¿Añadir canción?":"¿Eliminar canción?")
 					.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int id) {
-							
-							
-							
-							new CancelSongTask().execute(String.format(Commons.URL_REQUEST_POST,Commons.DEVICE_ID, mSongSelected.getId()));
+							if(mButtonAdd){
+								new MakeRequestTask().execute(String.format(Commons.URL_REQUEST_POST,Commons.DEVICE_ID, mSongSelected.getId()));								
+							}else{
+								new CancelRequestTask().execute(String.format(Commons.URL_REQUEST_PUT,Commons.DEVICE_ID, mSongSelected.getId()));
+							}							
 							mSongList.remove(mSongSelectedPos);
+							
 							notifyDataSetChanged();
 						}})
 					.setNegativeButton("No", null)
@@ -112,11 +114,11 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 		return convertView;
 	}
 	
-	private class CancelSongTask extends AsyncTask<String, Long, String> {
+	private class MakeRequestTask extends AsyncTask<String, Long, String> {
 		protected String doInBackground(String... urls) {
 			try {
 				Log.d(Commons.TAG, "Post - Request:"+urls[0]);
-				return HttpRequest.post(urls[0]).accept("application/json").body();			
+				return HttpRequest.post(urls[0]).accept("application/json").body();
 			} catch (HttpRequestException exception) {
 				return null;
 			}
@@ -126,7 +128,21 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 			Log.d(Commons.TAG, "Post - Response:"+response);
 		}
 	}
+	
+	private class CancelRequestTask extends AsyncTask<String, Long, String> {
+		protected String doInBackground(String... urls) {
+			try {
+				Log.d(Commons.TAG, "Put - Request:"+urls[0]);
+				return HttpRequest.put(urls[0]).accept("application/json").body();
+			} catch (HttpRequestException exception) {
+				return null;
+			}
+		}
 
+		protected void onPostExecute(String response) {
+			Log.d(Commons.TAG, "Put - Response:"+response);
+		}
+	}
 
 	class ViewHolder {
 		TextView tvName;
