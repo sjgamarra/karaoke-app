@@ -31,7 +31,6 @@ public class Cancion implements Serializable {
 
 	private String genero;
 
-	@Column(unique=true)
 	private String nombreArchivo;
 	
 	private String titulo;
@@ -39,7 +38,7 @@ public class Cancion implements Serializable {
 	private String artista;
 	
 	private String album;
-
+	
 	//bi-directional many-to-one association to Pedido
 //	@OneToMany(mappedBy="cancion")
 //	private List<Pedido> pedidos;
@@ -124,6 +123,4 @@ public class Cancion implements Serializable {
 	public void setAlbum(String album) {
 		this.album = album;
 	}
-
-	
 }

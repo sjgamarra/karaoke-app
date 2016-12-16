@@ -49,7 +49,7 @@ public class PedidoController {
 	public List<Song> obtenerPedidos(
 			@PathVariable("dispositivoId") String dispositivoId){
 		
-		System.out.println("PedidosController - obtenerPedidos");
+		System.out.println("PedidosController - obtenerPedidos - GET");
 		
 		List<Song> songs = new ArrayList<Song>();
 		
@@ -68,7 +68,8 @@ public class PedidoController {
 						pedido.getCancion().getTitulo(), 
 						pedido.getCancion().getArtista(), 
 						pedido.getCancion().getGenero(), 
-						pedido.getCancion().getEstado());
+						pedido.getCancion().getEstado(),
+						pedido.getId());
 				songs.add(song);
 			}
 		}catch (Exception e){
@@ -85,11 +86,13 @@ public class PedidoController {
 	 * @param cancionId
 	 */
 	@RequestMapping(value = "/pedidos/{dispositivoId}/{cancionId}", method = RequestMethod.POST)
-	public void crearPedido(
+	public boolean crearPedido(
 			@PathVariable("dispositivoId") String dispositivoId, 
-			@PathVariable("cancionId") long cancionId){
+			@PathVariable("cancionId") Long cancionId){
 		
-		System.out.println("PedidoController - crearPedido");
+		System.out.println("PedidoController - crearPedido - POST");
+		
+		boolean response = false;
 		
 		try{
 			Cancion cancion = new Cancion();
@@ -102,32 +105,49 @@ public class PedidoController {
 			pedido.setFechaHora(new Date());
 			
 			pedidoRepository.save(pedido);
+			
+			response = true;
 		}catch(Exception e){
 			//log
+			response = false;
 		}
+		
+		return response;
 	}
 	
 	/***
-	 * Cancela pedido activo por dispositivo y cancion
+	 * Cancela/Atualiza pedido activo por dispositivo y cancion
 	 * @param dispositivoId
-	 * @param cancionId
+	 * @param pedidoId
 	 */
-	@RequestMapping(value = "/pedidos/{dispositivoId}/{cancionId}", method = RequestMethod.PUT)
-	public void cancelarPedidos(
+	@RequestMapping(value = "/pedidos/{dispositivoId}/{pedidoId}", method = RequestMethod.PUT)
+	public boolean cancelarPedidos(
 			@PathVariable("dispositivoId") String dispositivoId,
-			@PathVariable("cancionId") long cancionId){
+			@PathVariable("pedidoId") Long pedidoId){
 		
-		System.out.println("PedidosController - cancelarPedido");
+		System.out.println("PedidosController - cancelarPedido - PUT");
+		
+		boolean response = false;
 		
 		try{
-			Cancion cancion = new Cancion();
-			cancion.setId(cancionId);
-			Pedido pedido = pedidoRepository.findByDispositivoIdAndCancion(dispositivoId, cancion);	
-			pedido.setEstado(4); //cancelado
-			pedidoRepository.save(pedido);
+			//TODO: validar que sea solo por ese dispositivo (aunque ya tenems el ID)
+			Pedido pedido = pedidoRepository.findById(pedidoId);
+			
+			if(pedido.getEstado().equals(1)){
+				response = true;
+				pedido.setEstado(4); //Estado cancelado.
+				pedidoRepository.save(pedido);
+			}
+			
+			if(pedido.getEstado().equals(2)){
+				response = false;
+			}
 		}catch(Exception e){
 			//log
+			response = false;
 		}
+		
+		return response;
 	}
 	
 	////LUCHO!

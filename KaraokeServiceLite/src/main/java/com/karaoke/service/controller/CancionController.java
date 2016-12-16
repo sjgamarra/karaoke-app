@@ -49,7 +49,8 @@ public class CancionController {
 			
 			System.out.println("parametros:"+genero+":"+nombre);
 			
-			List<Cancion> canciones = (List<Cancion>) cancionRepository.findByGeneroContainingIgnoreCaseAndTituloContainingIgnoreCaseOrArtistaContainingIgnoreCase(genero, nombre, nombre);
+			//List<Cancion> canciones = (List<Cancion>) cancionRepository.findByGeneroContainingIgnoreCaseAndTituloContainingIgnoreCaseOrArtistaContainingIgnoreCase(genero, nombre, nombre);
+			List<Cancion> canciones = (List<Cancion>) cancionRepository.findCancion(genero, nombre, nombre);
 			
 			for(Cancion cancion : canciones){
 				Song song = new Song(
@@ -57,7 +58,9 @@ public class CancionController {
 						cancion.getTitulo(), 
 						cancion.getArtista(), 
 						cancion.getGenero(), 
-						cancion.getEstado());
+						cancion.getEstado(),
+						0l	//no valor de pedido
+						);
 				songs.add(song);
 			}
 		}catch(Exception e){

@@ -3,5 +3,6 @@
 
     <string name="app_name">VAG Karaoke</string>
     <string name="action_settings">Config</string>
+    <string name="sp_genre">Seleccionar</string>
 
 </resources>

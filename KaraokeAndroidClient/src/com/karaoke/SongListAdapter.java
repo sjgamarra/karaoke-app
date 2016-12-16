@@ -33,6 +33,8 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 	
 	private int mSongSelectedPos;
 	private Song mSongSelected;
+	
+	private boolean mResponse;
 
 	// Constructor
 	public SongListAdapter(Context mContext, List<Song> mSongList, boolean mButtonHidden, boolean mButtonAdd) {
@@ -93,18 +95,22 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 				
 				AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
 				builder
-					.setMessage(mButtonAdd?"¿Añadir canción?":"¿Eliminar canción?")
+					.setMessage(mButtonAdd?"¿Desea añadir esta canci\u00F3n a su lista?":"¿Desea eliminar esta canci\u00F3n de su lista?")
 					.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int id) {
 							if(mButtonAdd){
-								new MakeRequestTask().execute(String.format(Commons.URL_REQUEST_POST,Commons.DEVICE_ID, mSongSelected.getId()));								
+								new MakeRequestTask().execute(String.format(Commons.URL_REQUEST_POST,Commons.DEVICE_ID, mSongSelected.getId()));
 							}else{
-								new CancelRequestTask().execute(String.format(Commons.URL_REQUEST_PUT,Commons.DEVICE_ID, mSongSelected.getId()));
-							}							
-							mSongList.remove(mSongSelectedPos);
+								new CancelRequestTask().execute(String.format(Commons.URL_REQUEST_PUT,Commons.DEVICE_ID, mSongSelected.getRequest()));
+								//new CancelRequestTask().execute(String.format(Commons.URL_REQUEST_PUT,Commons.DEVICE_ID, mSongSelected.getId())); //con Id
+							}						
 							
-							notifyDataSetChanged();
+							//MOVIDO A CADA TASK v.v
+//							if(mResponse){
+//								mSongList.remove(mSongSelectedPos);
+//								notifyDataSetChanged();								
+//							}
 						}})
 					.setNegativeButton("No", null)
 					.show();
@@ -126,6 +132,13 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 
 		protected void onPostExecute(String response) {
 			Log.d(Commons.TAG, "Post - Response:"+response);
+			
+			mResponse = Boolean.valueOf(response);
+			if(mResponse){
+				Toast.makeText(mContext, "La canci\u00F3n ha sido agregada.", Toast.LENGTH_SHORT ).show();
+				mSongList.remove(mSongSelectedPos);
+				notifyDataSetChanged();
+			}
 		}
 	}
 	
@@ -141,6 +154,14 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 
 		protected void onPostExecute(String response) {
 			Log.d(Commons.TAG, "Put - Response:"+response);
+			mResponse = Boolean.valueOf(response);
+			if(mResponse){
+				Toast.makeText(mContext, "La canci\u00F3n ha sido cancelada.", Toast.LENGTH_SHORT ).show();
+				mSongList.remove(mSongSelectedPos);
+				notifyDataSetChanged();
+			}else{
+				Toast.makeText(mContext, "La canci\u00F3n no puede ser cancelada.", Toast.LENGTH_SHORT ).show();
+			}
 		}
 	}
 

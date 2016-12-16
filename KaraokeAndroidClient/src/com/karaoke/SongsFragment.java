@@ -13,6 +13,7 @@ import com.karaoke.utils.Commons;
 import com.karaoke.utils.HttpRequest;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,17 +23,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class SongsFragment extends Fragment {
 
 	private EditText etSearch;
-	//private Button btSearch;
 	private ListView lvSongs;
+	private Spinner spGenre;
 	private SongListAdapter adapter;
 	private List<Song> mSongList;
 
@@ -44,6 +48,25 @@ public class SongsFragment extends Fragment {
 
 		this.etSearch = (EditText) rootView.findViewById(R.id.et_search);
 		this.lvSongs = (ListView) rootView.findViewById(R.id.lv_songs);
+		this.spGenre = (Spinner) rootView.findViewById(R.id.sp_genre);
+		
+		//Cargar lista de generos
+        List<String> list = new ArrayList<String>();
+        list.add("TODOS");
+        list.add("ROCK");
+        list.add("SALSA");
+        list.add("BALADA");
+        list.add("HIPHOP");
+        list.add("VARIADO");
+         
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_item,list);  
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        this.spGenre.setAdapter(dataAdapter);
+		
+		//Mostrar teclado virtual.
+		//this.etSearch.requestFocus();
+//		InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//		imm.showSoftInput(this.etSearch, InputMethodManager.SHOW_IMPLICIT);
 	
 		this.etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
@@ -53,8 +76,8 @@ public class SongsFragment extends Fragment {
 						Log.d(Commons.TAG, "SongsFragment  - onSearch");
 						
 						//construir url
-						String genre = URLEncoder.encode("all", "UTF-8");
-						String name = URLEncoder.encode(etSearch.getText().toString(), "UTF-8");						
+						String genre = URLEncoder.encode(spGenre.getSelectedItem().toString(), "UTF-8");
+						String name = URLEncoder.encode(etSearch.getText().toString(), "UTF-8");				
 						String songsUrl = String.format(Commons.URL_SONG_GET, genre, name);
 
 						Log.d(Commons.TAG, "SongsFragment  - onSearch - " + songsUrl);
@@ -80,8 +103,6 @@ public class SongsFragment extends Fragment {
 							adapter = new SongListAdapter(v.getContext(), mSongList, true,true);
 							lvSongs.setAdapter(adapter);
 						}
-						
-						
 			            return true;
 			        }
 					return false;

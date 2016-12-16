@@ -1,21 +1,23 @@
 package com.karaoke.entity;
 
 public class Song {
-
 	private Long id;
 	private String title;
 	private String artist;
 	private String genre;
 	private Integer status;
-
-	public Song(Long id, String title, String artist, String genre, Integer status) {
+	private Long request;
+	
+	public Song(Long id, String title, String artist, String genre, Integer status, Long request) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.artist = artist;
 		this.genre = genre;
 		this.status = status;
+		this.request = request;
 	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -46,5 +48,11 @@ public class Song {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-		
+	public Long getRequest() {
+		return request;
+	}
+	public void setRequest(Long request) {
+		this.request = request;
+	}
+	
 }

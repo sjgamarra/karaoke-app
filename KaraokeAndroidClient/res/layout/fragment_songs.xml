@@ -3,10 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    
+  	<Spinner
+            android:id="@+id/sp_genre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+			android:popupBackground="#252525"
+			android:padding="10dp"
+            android:prompt="@string/sp_genre" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
+
 
         <EditText
             android:id="@+id/et_search"
@@ -18,8 +27,8 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             android:textColor="#ffffff"
+            android:textCursorDrawable="@null"
             android:ems="10" >
-
             <requestFocus />
         </EditText>
 
@@ -44,6 +53,8 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:dividerHeight="1dp"
-        android:divider="#d1d1d1"></ListView>
+        android:divider="#d1d1d1">
+        
+    </ListView>
 
 </LinearLayout>
