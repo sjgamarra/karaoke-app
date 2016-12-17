@@ -1,6 +1,8 @@
 package com.karaoke;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +13,11 @@ import com.karaoke.utils.Commons;
 import com.karaoke.utils.HttpRequest;
 import com.karaoke.utils.HttpRequest.HttpRequestException;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -26,17 +30,19 @@ import android.widget.ListView;
 public class MySongsFragment extends Fragment {
 
 	private ListView lvSongs;
+	private List<Song> mSongList;
     private SongListAdapter adapter;
-    private List<Song> mMySongList;
+    private Handler handler = new Handler();
+    private String mDeviceName;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
-		Log.d(Commons.TAG, "MySongsFragment - onCreateView");
+		Log.d(Commons.APP_TAG, "MySongsFragment - onCreateView");
 		 		
 		View rootView = inflater.inflate(R.layout.fragment_my_songs, container, false);
 		this.lvSongs = (ListView)rootView.findViewById(R.id.lv_songs);
-		this.mMySongList = new ArrayList<Song>();
+		this.mSongList = new ArrayList<Song>();
 		
 		//verificar si el teclado virtual esta deployado
 		View view = getActivity().getCurrentFocus();
@@ -46,48 +52,67 @@ public class MySongsFragment extends Fragment {
 		    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 		}
 		
-		String mySongsUrl = String.format(Commons.URL_REQUEST_GET,Commons.DEVICE_ID);
+        BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
+        mDeviceName = myDevice.getName();
 		
 		try{
-			
-			
+			//String mySongsUrl = String.format(Commons.URL_REQUEST_GET,URLEncoder.encode(mDeviceName, "UTF-8"));
 			//sincrono
-			String response = HttpRequest.get(mySongsUrl).accept("application/json").body();
-			Gson gson = new Gson();
-			Type listType = new TypeToken<List<Song>>(){}.getType();
-			mMySongList = gson.fromJson(response, listType);
-			adapter = new SongListAdapter(getActivity().getApplicationContext(), mMySongList, true,false);
-			lvSongs.setAdapter(adapter);
-			
+//			String response = HttpRequest.get(mySongsUrl).accept("application/json").body();
+//			Gson gson = new Gson();
+//			Type listType = new TypeToken<List<Song>>(){}.getType();
+//			mMySongList = gson.fromJson(response, listType);
+//			adapter = new SongListAdapter(getActivity().getApplicationContext(), mMySongList, true,false);
+//			lvSongs.setAdapter(adapter);
 			//asincrono
 			//new GetMySongsTask().execute(mySongsUrl);
+			
+			scheduleGetSongs();
 		}catch (Exception e){
-			//log
+			Log.d(Commons.APP_TAG, "GetMySongs - Exception: "+e.getMessage());
 		}
 		
 		return rootView;
 	}
 	
-//	private class GetMySongsTask extends AsyncTask<String, Long, String> {
-//		protected String doInBackground(String... urls) {
-//			try {
-//				Log.d(Commons.TAG, "GetMySongs - Request:"+urls[0]);
-//				return HttpRequest.get(urls[0]).accept("application/json").body();			
-//			} catch (HttpRequestException exception) {
-//				return null;
-//			}
-//		}
-//
-//		protected void onPostExecute(String response) {
-//			Log.d(Commons.TAG, "GetMySongs - Response:"+response);
-//
-//			Gson gson = new Gson();
-//			Type listType = new TypeToken<List<Song>>(){}.getType();
-//			mMySongList = gson.fromJson(response, listType);
-//			
-//			adapter = new SongListAdapter(getActivity().getApplicationContext(), mMySongList, true, "-");
-//			lvSongs.setAdapter(adapter);
-//			
-//		}
-//	}
+	public void scheduleGetSongs() {
+	    handler.postDelayed(new Runnable() {
+	        public void run() {
+	        	String mySongsUrl;
+				try {
+					mySongsUrl = String.format(Commons.URL_REQUEST_GET,URLEncoder.encode(mDeviceName, "UTF-8"));
+		            new GetMySongsTask().execute(mySongsUrl);
+		            handler.postDelayed(this, Commons.APP_RECALL);
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        }
+	    }, Commons.APP_RECALL);
+	}
+	
+	private class GetMySongsTask extends AsyncTask<String, Long, String> {
+		protected String doInBackground(String... urls) {
+			try {
+				Log.d(Commons.APP_TAG, "GetMySongs - Request:"+urls[0]);
+				return HttpRequest.get(urls[0]).accept("application/json").body();			
+			} catch (HttpRequestException exception) {
+				return null;
+			}
+		}
+
+		protected void onPostExecute(String response) {
+			Log.d(Commons.APP_TAG, "GetMySongs - Response:"+response);
+			
+			if (response != null) {
+				Gson gson = new Gson();
+				Type listType = new TypeToken<List<Song>>() {}.getType();
+				mSongList = gson.fromJson(response, listType);
+
+				adapter = new SongListAdapter(getActivity().getApplicationContext(), mSongList, true, false);
+				lvSongs.setAdapter(adapter);
+			}
+			
+		}
+	}
 }

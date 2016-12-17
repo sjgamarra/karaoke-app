@@ -1,33 +1,32 @@
 package com.karaoke;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.AsyncTask;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
+import java.net.URLEncoder;
 import java.util.List;
-import java.util.Map;
 
 import com.karaoke.entity.Song;
 import com.karaoke.utils.Commons;
 import com.karaoke.utils.HttpRequest;
 import com.karaoke.utils.HttpRequest.HttpRequestException;
 
+import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
 	public class SongListAdapter extends BaseAdapter{
 
 	private Context mContext;
 	private List<Song> mSongList;
 
+	private String mDeviceName;
 	private boolean mButtonShow;
 	private boolean mButtonAdd;
 	
@@ -42,6 +41,10 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 		this.mSongList = mSongList;
 		this.mButtonShow = mButtonHidden;
 		this.mButtonAdd = mButtonAdd;
+		
+        //obtener nombre del dispositvo
+        BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
+        mDeviceName = myDevice.getName();
 	}
 
 	@Override
@@ -99,31 +102,27 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 					.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int id) {
-							if(mButtonAdd){
-								new MakeRequestTask().execute(String.format(Commons.URL_REQUEST_POST,Commons.DEVICE_ID, mSongSelected.getId()));
-							}else{
-								new CancelRequestTask().execute(String.format(Commons.URL_REQUEST_PUT,Commons.DEVICE_ID, mSongSelected.getRequest()));
-								//new CancelRequestTask().execute(String.format(Commons.URL_REQUEST_PUT,Commons.DEVICE_ID, mSongSelected.getId())); //con Id
-							}						
-							
-							//MOVIDO A CADA TASK v.v
-//							if(mResponse){
-//								mSongList.remove(mSongSelectedPos);
-//								notifyDataSetChanged();								
-//							}
+							try{
+								if(mButtonAdd){
+									new MakeRequestTask().execute (String.format(Commons.URL_REQUEST_POST,URLEncoder.encode(mDeviceName, "UTF-8"), mSongSelected.getId()));
+								}else{
+									new CancelRequestTask().execute(String.format(Commons.URL_REQUEST_PUT,URLEncoder.encode(mDeviceName, "UTF-8"), mSongSelected.getRequest()));
+								}
+							}catch(Exception e){
+								
+							}
 						}})
 					.setNegativeButton("No", null)
 					.show();
 			}
 		});
-
 		return convertView;
 	}
 	
 	private class MakeRequestTask extends AsyncTask<String, Long, String> {
 		protected String doInBackground(String... urls) {
 			try {
-				Log.d(Commons.TAG, "Post - Request:"+urls[0]);
+				Log.d(Commons.APP_TAG, "Post - Request:"+urls[0]);
 				return HttpRequest.post(urls[0]).accept("application/json").body();
 			} catch (HttpRequestException exception) {
 				return null;
@@ -131,7 +130,7 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 		}
 
 		protected void onPostExecute(String response) {
-			Log.d(Commons.TAG, "Post - Response:"+response);
+			Log.d(Commons.APP_TAG, "Post - Response:"+response);
 			
 			mResponse = Boolean.valueOf(response);
 			if(mResponse){
@@ -145,7 +144,7 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 	private class CancelRequestTask extends AsyncTask<String, Long, String> {
 		protected String doInBackground(String... urls) {
 			try {
-				Log.d(Commons.TAG, "Put - Request:"+urls[0]);
+				Log.d(Commons.APP_TAG, "Put - Request:"+urls[0]);
 				return HttpRequest.put(urls[0]).accept("application/json").body();
 			} catch (HttpRequestException exception) {
 				return null;
@@ -153,7 +152,7 @@ import com.karaoke.utils.HttpRequest.HttpRequestException;
 		}
 
 		protected void onPostExecute(String response) {
-			Log.d(Commons.TAG, "Put - Response:"+response);
+			Log.d(Commons.APP_TAG, "Put - Response:"+response);
 			mResponse = Boolean.valueOf(response);
 			if(mResponse){
 				Toast.makeText(mContext, "La canci\u00F3n ha sido cancelada.", Toast.LENGTH_SHORT ).show();

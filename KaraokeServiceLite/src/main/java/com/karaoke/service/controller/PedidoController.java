@@ -1,5 +1,6 @@
 package com.karaoke.service.controller;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,11 +50,13 @@ public class PedidoController {
 	public List<Song> obtenerPedidos(
 			@PathVariable("dispositivoId") String dispositivoId){
 		
-		System.out.println("PedidosController - obtenerPedidos - GET");
+		System.out.println("PedidosController - obtenerPedidos - GET " + dispositivoId);
 		
 		List<Song> songs = new ArrayList<Song>();
-		
+	
 		try{
+			dispositivoId = URLDecoder.decode(dispositivoId, "UTF-8");
+			
 			List<Pedido> pedidos = new ArrayList<Pedido>();
 			if(dispositivoId.equals("all")){
 				//TODO: aca deberia obtener la lista armada de la sala.
@@ -90,11 +93,13 @@ public class PedidoController {
 			@PathVariable("dispositivoId") String dispositivoId, 
 			@PathVariable("cancionId") Long cancionId){
 		
-		System.out.println("PedidoController - crearPedido - POST");
+		System.out.println("PedidoController - crearPedido - POST " + dispositivoId + " - " + cancionId);
 		
 		boolean response = false;
 		
 		try{
+			dispositivoId = URLDecoder.decode(dispositivoId, "UTF-8");
+			
 			Cancion cancion = new Cancion();
 			cancion.setId(cancionId);
 			
@@ -129,17 +134,17 @@ public class PedidoController {
 		
 		boolean response = false;
 		
-		try{
+		try{			
 			//TODO: validar que sea solo por ese dispositivo (aunque ya tenems el ID)
+			dispositivoId = URLDecoder.decode(dispositivoId, "UTF-8");
+			
 			Pedido pedido = pedidoRepository.findById(pedidoId);
 			
 			if(pedido.getEstado().equals(1)){
 				response = true;
 				pedido.setEstado(4); //Estado cancelado.
 				pedidoRepository.save(pedido);
-			}
-			
-			if(pedido.getEstado().equals(2)){
+			} else if(pedido.getEstado().equals(2)){
 				response = false;
 			}
 		}catch(Exception e){

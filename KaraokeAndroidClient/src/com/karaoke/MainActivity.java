@@ -135,23 +135,23 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         @Override
         public Fragment getItem(int i) {
-        	Log.d(Commons.TAG, "MainActivity - GET-ITEM-FRAGMENT - " + i);
+        	Log.d(Commons.APP_TAG, "MainActivity - GET-ITEM-FRAGMENT - " + i);
         	Bundle args;
             switch (i) {
                 case 0:
-                	Log.d(Commons.TAG, "MainActivity - AllSongsFragment");
+                	Log.d(Commons.APP_TAG, "MainActivity - AllSongsFragment");
                 	AllSongsFragment allSongsFragment = new AllSongsFragment();
                 	args = new Bundle();
                 	allSongsFragment.setArguments(args);
                     return allSongsFragment;
                 case 1:
-                	Log.d(Commons.TAG, "MainActivity - SongsFragment");
+                	Log.d(Commons.APP_TAG, "MainActivity - SongsFragment");
                 	Fragment songsFragment = new SongsFragment();
                 	args = new Bundle();
                 	songsFragment.setArguments(args);
                     return songsFragment;
                 case 2:
-                	Log.d(Commons.TAG, "MainActivity - MySongsFragment");
+                	Log.d(Commons.APP_TAG, "MainActivity - MySongsFragment");
                 	MySongsFragment mySongsFragment = new MySongsFragment();               	
                 	args = new Bundle();
                 	mySongsFragment.setArguments(args);

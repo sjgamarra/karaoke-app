@@ -1,11 +1,12 @@
 package com.karaoke.utils;
 
 public final class Commons {
-	public static final String CONTEXT_URL = "http://192.168.1.5:8080";
-	//public static final String CONTEXT_URL = "http://192.168.1.12:8080";
+	//public static final String CONTEXT_URL = "http://192.168.1.5:8080";
+	public static final String CONTEXT_URL = "http://192.168.0.100:8080";
 	
-	public static final String DEVICE_ID = "MESA_1";
-	public static final String TAG = "KAPP";	
+	//public static final String DEVICE_ID = "MESA_1";
+	public static final String APP_TAG = "KAPP";
+	public static final long APP_RECALL = 5000;
 
 	//CANCIONES
 	public static final String URL_SONG_GET = CONTEXT_URL + "/canciones/%s/%s";
