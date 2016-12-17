@@ -43,11 +43,23 @@ function CDGMagic_cdgdecoder( canvas_element, border_div )
 		VRAM_SIZE       : 300*216, // Total linear size of VRAM, in pixels.
 	    VRAM_WIDTH      :  300,    // Width (or pitch) of VRAM, in pixels.
 		VRAM_HEIGHT     :  216,    // Height of VRAM, in pixels.
+		
+//		VRAM_SIZE       : 600*532, // Total linear size of VRAM, in pixels.
+//	    VRAM_WIDTH      :  600,    // Width (or pitch) of VRAM, in pixels.
+//		VRAM_HEIGHT     :  532,    // Height of VRAM, in pixels.
+		
         VISIBLE_SIZE    : 288*192, // Total linear size of visible screen, in pixels.
         VISIBLE_WIDTH   :  288,    // Width (or pitch) of visible screen, in pixels.
         VISIBLE_HEIGHT  :  192,    // Height of visible screen, in pixels.
         FONT_WIDTH      :    6,    // Width of  one "font" (or block).
         FONT_HEIGHT     :   12,    // Height of one "font" (or block).
+		
+//        VISIBLE_SIZE    : 576*384, // Total linear size of visible screen, in pixels.
+//        VISIBLE_WIDTH   :  576,    // Width (or pitch) of visible screen, in pixels.
+//        VISIBLE_HEIGHT  :  384,    // Height of visible screen, in pixels.
+//        FONT_WIDTH      :    12,    // Width of  one "font" (or block).
+//        FONT_HEIGHT     :   24,    // Height of one "font" (or block).
+        
         NUM_X_FONTS     :   50,    // Number of horizontal fonts contained in VRAM.
         NUM_Y_FONTS     :   18,    // Number of vertical fonts contained in VRAM.
         PALETTE_ENTRIES :   16,    // Number of CLUT palette entries.
@@ -57,6 +69,7 @@ function CDGMagic_cdgdecoder( canvas_element, border_div )
         LOAD_CLUT_LO    : 0x1E,    // Load Color Look Up Table index 0 through 7.
         LOAD_CLUT_HI    : 0x1F,    // Load Color Look Up Table index 8 through 15.
         COPY_FONT       : 0x06,    // Copy 12x6 pixel font to screen.
+        //COPY_FONT       : 0x12,    // Copy 12x6 pixel font to screen.
         XOR_FONT        : 0x26,    // XOR 12x6 pixel font with existing VRAM values.
         SCROLL_PRESET   : 0x14,    // Update scroll offset, copying if 0x20 or 0x10.
         SCROLL_COPY     : 0x18     // Update scroll offset, setting color if 0x20 or 0x10.

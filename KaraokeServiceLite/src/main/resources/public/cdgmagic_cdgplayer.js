@@ -49,7 +49,7 @@ function CDG_Player_init( audio_id, canvas_id, border_id, status_id )
     audio_player.addEventListener("error", audio_error_dialog,  true);
     audio_player.addEventListener("play",  start_cdg_timer, true);
     audio_player.addEventListener("pause", stop_cdg_timer,  true);
-    audio_player.addEventListener("ended", ejecucionTerminada,  true);
+    audio_player.addEventListener("ended", cdgPlayer_reproducirSiguiente,  true);
     audio_player.addEventListener("abort", stop_cdg_timer,  true);
 
     // HTML5 canvas elements for accessing RGBA pixels.
@@ -183,7 +183,7 @@ function stop_cdg_timer()
 // CANCELADO = 4 ;
 
 //se llama a este método cuando se termina la ejecución de la música para llamar al siguiente pedido
-function ejecucionTerminada(){
+function cdgPlayer_reproducirSiguiente(){
 	clearInterval(cdg_timer_id);
 	//cambiar estado de anterior pedido a REPRODUCIDO
 	currentPedido.estado = 3

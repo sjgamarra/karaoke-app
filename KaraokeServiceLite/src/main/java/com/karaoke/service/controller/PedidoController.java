@@ -4,6 +4,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -176,13 +177,19 @@ public class PedidoController {
 		{
 			//TODO: crear un pedido aleatorio
 			List<Cancion> lstCancion =  cancionRepository.findTop100ByOrderByIdAsc();
-			int posRandon = (int)Math.random()*(lstCancion.size()-1);
-			Cancion cancionRandom = lstCancion.get(posRandon);
+			int posRandom = randomDesdeRango(0,lstCancion.size()-1);
+			//int posRandom = (int)Math.random()*(lstCancion.size()-1);
+			Cancion cancionRandom = lstCancion.get(posRandom);
 			pedido = new Pedido();
 			pedido.setCancion(cancionRandom);
 		}
 		
 		return pedido;
+	}
+	
+	private int randomDesdeRango(int minimo, int maximo){
+		Random r = new Random();
+		return r.nextInt(maximo-minimo) + minimo;
 	}
 
 	private Pedido obtenerPedidoCircularmente(){

@@ -4,7 +4,7 @@ public class PedidoManager {
 		// Instance for PedidoManager
 		private static PedidoManager INSTANCE = null;
 	 
-		private String []dispositivos = {"MESA1","MESA2","MESA3"};
+		private String []dispositivos = {"MESA 1","MESA 2","MESA 3"};
 		private int counter = 0;
 		/**
 		 * Get Instance for PedidoManager

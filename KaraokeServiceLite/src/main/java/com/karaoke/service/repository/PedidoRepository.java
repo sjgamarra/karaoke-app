@@ -35,6 +35,6 @@ public interface PedidoRepository extends CrudRepository<Pedido, Long>{
 	public Pedido findFirstByEstado(int estado);
 	
 	
-	
+	public Pedido findByDispositivoIdAndCancion(String dispositivoId, Cancion cancion);
 	
 }
