@@ -59,7 +59,8 @@ public class CancionController {
 						cancion.getArtista(), 
 						cancion.getGenero(), 
 						cancion.getEstado(),
-						0l	//no valor de pedido
+						0l,	//sin id de pedido
+						""	//sin id de dispositivo
 						);
 				songs.add(song);
 			}
@@ -68,6 +69,20 @@ public class CancionController {
 		}
 		
 		return songs;
+	}
+	
+	@RequestMapping(value = "/generos", method = RequestMethod.GET)
+	public List<String> obtenerGeneros(){
+	
+		List<String> generos = new ArrayList<String>();
+		
+		try{
+			generos = cancionRepository.findGeneros();
+		}catch(Exception e){
+			//log
+		}
+		
+		return generos;
 	}
 	
 	

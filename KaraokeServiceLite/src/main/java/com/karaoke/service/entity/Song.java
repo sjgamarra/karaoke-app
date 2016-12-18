@@ -7,8 +7,9 @@ public class Song {
 	private String genre;
 	private Integer status;
 	private Long request;
+	private String device;
 	
-	public Song(Long id, String title, String artist, String genre, Integer status, Long request) {
+	public Song(Long id, String title, String artist, String genre, Integer status, Long request, String device) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -16,8 +17,8 @@ public class Song {
 		this.genre = genre;
 		this.status = status;
 		this.request = request;
+		this.device = device;
 	}
-	
 	public Long getId() {
 		return id;
 	}
@@ -54,5 +55,10 @@ public class Song {
 	public void setRequest(Long request) {
 		this.request = request;
 	}
-	
+	public String getDevice() {
+		return device;
+	}
+	public void setDevice(String device) {
+		this.device = device;
+	}	
 }
