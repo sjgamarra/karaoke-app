@@ -98,7 +98,7 @@ public class AllSongsFragment extends Fragment {
 				adapter = new SongListAdapter(getActivity().getApplicationContext(), mSongList, false, false);
 				lvSongs.setAdapter(adapter);
 				
-				if(mSongList.get(0).getDevice().equals(mDeviceName)){
+				if(mSongList.size() > 0 &&  mSongList.get(0).getDevice().equals(mDeviceName)){
 					Toast.makeText(getActivity().getApplicationContext(), Commons.MSG_TOAST_REQUEST_PLAYING, Toast.LENGTH_SHORT ).show();
 				}
 			}			

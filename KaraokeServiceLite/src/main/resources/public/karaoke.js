@@ -4,6 +4,9 @@ var zoom_mode = 0;
 //screen variable used to make zoom
 var screenCdgPlayer;
 
+//Tiempo que se demora en mostrar el mensaje de notificación
+var duracionNotificacion = 5000;
+
 $(document).ready(function() {
 	ejecutarSiguientePedido();
 	//screenCdgPlayer = document.getElementById('cdg_canvas');
@@ -35,7 +38,6 @@ $(document).ready(function() {
 	        duration: 1000
 	      }
 	 });
-	 //$("#dialog-notificacionMesa" ).dialog();
 	
 	if (document.addEventListener)
 	{
@@ -53,15 +55,11 @@ $(document).ready(function() {
 //REPRODUCIDO = 3 ;
 //CANCELADO = 4 ;
 function ejecutarSiguientePedido(){
-//	$.ajax({
-//        url: "http://localhost:8080/parametro/DIRECTORIO_CANCIONES",
-//        type: 'get'
-//    }).then(function(parametro) {
-//    	dirCanciones = parametro.valor;
     	
-	    	 //Obtener pedido de BD
+    	 //Obtener pedido de BD
     	 $.ajax({
-    	        url: "http://localhost:8080/pedido",
+    	        //url: "http://localhost:8080/pedido",
+    		 	url: "/pedido",
     	        async: false,
     	        type: 'get'
     	    }).then(function(pedido) {
@@ -77,14 +75,13 @@ function ejecutarSiguientePedido(){
     	    	{
 //    	    		$( "#notificacionMesa" ).text( pedido.dispositivoId );
 //    	    		$( "#notificacionMesa" ).show().delay(5000).fadeOut();
-    	    		
     	    		$( "#notificacionMesa" ).text( pedido.dispositivoId );
     	    		//$( "#dialog-notificacionMesa" ).dialog( "open" );
     	    		//$( "#dialog-notificacionMesa" ).dialog("open").delay(9000).dialog( "close" );
     	    		$( "#dialog-notificacionMesa" ).dialog("open");
     	    		setTimeout(function(){
     	    			$( "#dialog-notificacionMesa" ).dialog("close");
-    	    		}, 5000);
+    	    		}, duracionNotificacion);
     	    	}
     	    	
     	// });
@@ -93,7 +90,8 @@ function ejecutarSiguientePedido(){
 
 function actualizarPedido(actualizarPedido){
 	$.ajax({
-	    url: "http://localhost:8080/pedido",
+	    //url: "http://localhost:8080/pedido",
+		url: "/pedido",
 	    type: 'put',
 	    contentType : 'application/json',
 	    dataType : 'json',
@@ -145,16 +143,16 @@ function isFullScreenEnabled(){
 function cdgPlayer_fullScreen(){
 	if(!isFullScreenEnabled())
 	{
-		$("#cdg_audio").hide();
-    	$("#btnCancelar").hide();
-    	$("#cdg_status").hide();
-    	$("#cdg_audio").hide();
+//		$("#cdg_audio").hide();
+//    	$("#btnCancelar").hide();
+//    	$("#cdg_status").hide();
+//    	$("#cdg_audio").hide();
 		enableFullScreen();
 	}else{
-		$("#cdg_audio").show();
-    	$("#btnCancelar").show();
-    	$("#cdg_status").show();
-    	$("#cdg_audio").show();
+//		$("#cdg_audio").show();
+//    	$("#btnCancelar").show();
+//    	$("#cdg_status").show();
+//    	$("#cdg_audio").show();
     	disableFullScreen();
 	}
 }
@@ -163,10 +161,10 @@ function exitFullScreenHandler()
 {
     if (screenCdgPlayer.webkitIsFullScreen || screenCdgPlayer.mozFullScreen || screenCdgPlayer.msFullscreenElement !== null)
     {
-	    $("#cdg_audio").show();
-	   	$("#btnCancelar").show();
-	   	$("#cdg_status").show();
-	   	$("#cdg_audio").show();
+//	    $("#cdg_audio").show();
+//	   	$("#btnCancelar").show();
+//	   	$("#cdg_status").show();
+//	   	$("#cdg_audio").show();
 	   	toggle_4x_mode();
     }else{
     	toggle_4x_mode();

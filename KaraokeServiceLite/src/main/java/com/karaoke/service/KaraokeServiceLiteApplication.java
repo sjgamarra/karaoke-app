@@ -1,20 +1,30 @@
 package com.karaoke.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import com.karaoke.service.repository.ParametroRepository;
+
 @SpringBootApplication
 public class KaraokeServiceLiteApplication extends WebMvcConfigurerAdapter{
 
+	@Autowired
+    private ParametroRepository parametroRepository;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(KaraokeServiceLiteApplication.class, args);
 	}
 	
 	@Override
 	public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+		String directorioCanciones = parametroRepository.findByNombre("DIRECTORIO_CANCIONES").get(0).getValor();
 	    registry.addResourceHandler("/biblioteca/**")
-	            .addResourceLocations("file:///E:/Canciones/");
+	    	.addResourceLocations("file:///" + directorioCanciones);
+		
+//	    registry.addResourceHandler("/biblioteca/**")
+//	            .addResourceLocations("file:///E:/Canciones/");
 	}
 }
