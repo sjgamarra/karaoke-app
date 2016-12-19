@@ -36,6 +36,9 @@ public class PedidoController {
 	
 	@Autowired
 	private ParametroRepository parametroRepository;
+	
+	@Autowired
+	private PedidoManager pedidoManager;
 
 	////SERGIO!!!
 	
@@ -195,7 +198,7 @@ public class PedidoController {
 	private Pedido obtenerPedidoCircularmente(){
 		Pedido pedido = null;
 		
-		PedidoManager pedidoManager = PedidoManager.getInstance();
+		//PedidoManager pedidoManager = PedidoManager.getInstance();
 		for(int i = 0 ; i < pedidoManager.getNumDispositivos(); i++){
 			String dispositivoId = pedidoManager.getNextDispositivo();
 			pedido = pedidoRepository.findFirstByEstadoAndDispositivoIdOrderByIdAsc(EstadoPedido.EN_COLA, dispositivoId);

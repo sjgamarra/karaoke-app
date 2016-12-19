@@ -1,11 +1,25 @@
 package com.karaoke.service.utils;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import com.karaoke.service.repository.ParametroRepository;
+
+@Component
+@Scope(value = "singleton")
 public class PedidoManager {
+		
 		// Instance for PedidoManager
 		private static PedidoManager INSTANCE = null;
 	 
-		private String []dispositivos = {"MESA 1","MESA 2","MESA 3"};
+		private String []dispositivos;
 		private int counter = 0;
+		@Autowired
+	    private ParametroRepository parametroRepository;
+		
 		/**
 		 * Get Instance for PedidoManager
 		 * 
@@ -23,6 +37,17 @@ public class PedidoManager {
 		 */
 		private PedidoManager() {
 			super();
+			
+		}
+		
+		@PostConstruct
+		public void loadDispositivos(){
+			try{
+				String dispositivosStr = parametroRepository.findByNombre("DISPOSITIVOS").get(0).getValor();
+				dispositivos = dispositivosStr.split(",");
+			}catch(Exception e){
+				dispositivos = new String[0];
+			}
 		}
 		
 		public String getNextDispositivo(){
