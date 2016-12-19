@@ -11,6 +11,7 @@ import com.karaoke.utils.Commons;
 import com.karaoke.utils.HttpRequest;
 import com.karaoke.utils.HttpRequest.HttpRequestException;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,13 +23,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class AllSongsFragment extends Fragment {
 
 	private ListView lvSongs;
 	private List<Song> mSongList;
     private SongListAdapter adapter;
-    private Handler handler = new Handler();
+    private Handler handler = null;
+    private String allSongsUrl;
+    private String mDeviceName;
+    private BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
     
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,7 +44,7 @@ public class AllSongsFragment extends Fragment {
 		this.mSongList = new ArrayList<Song>();
 		
 		//verificar si el teclado virtual esta deployado
-		View view = getActivity().getCurrentFocus();		
+		View view = getActivity().getCurrentFocus();
 		if (view != null) {  
 			view.clearFocus();
 		    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -47,18 +52,15 @@ public class AllSongsFragment extends Fragment {
 		}
 		
 		try{
-			//String allSongsUrl = String.format(Commons.URL_REQUEST_GET,"all");
-			//sincrono
-//			String response = HttpRequest.get(allSongsUrl).accept("application/json").body();
-//			Gson gson = new Gson();
-//			Type listType = new TypeToken<List<Song>>(){}.getType();
-//			mSongList = gson.fromJson(response, listType);
-//			adapter = new SongListAdapter(getActivity().getApplicationContext(), mSongList, false,false);
-//			lvSongs.setAdapter(adapter);
+			mDeviceName = myDevice.getName();
+			allSongsUrl = String.format(Commons.URL_REQUEST_GET,"all");
+
 			//asincrono
-			//new GetAllSongsTask().execute(allSongsUrl);
+			new GetAllSongsTask().execute(allSongsUrl);
 			
-			scheduleGetSongs();
+			if(handler == null){
+				scheduleGetSongs();
+			}
 		}catch(Exception e){
 			Log.d(Commons.APP_TAG, "GetAllSongs - Exception: "+e.getMessage());
 		}
@@ -67,9 +69,9 @@ public class AllSongsFragment extends Fragment {
 	}
 	
 	public void scheduleGetSongs() {
+		handler = new Handler();
 	    handler.postDelayed(new Runnable() {
 	        public void run() {
-	    		String allSongsUrl = String.format(Commons.URL_REQUEST_GET,"all");
 	            new GetAllSongsTask().execute(allSongsUrl);
 	            handler.postDelayed(this, Commons.APP_RECALL);
 	        }
@@ -87,7 +89,7 @@ public class AllSongsFragment extends Fragment {
 		}
 
 		protected void onPostExecute(String response) {
-			Log.d(Commons.APP_TAG, "GetAllSongs - Response:"+response);
+			//Log.d(Commons.APP_TAG, "GetAllSongs - Response:"+response);
 			if(response != null){
 				Gson gson = new Gson();
 				Type listType = new TypeToken<List<Song>>(){}.getType();
@@ -95,6 +97,10 @@ public class AllSongsFragment extends Fragment {
 				
 				adapter = new SongListAdapter(getActivity().getApplicationContext(), mSongList, false, false);
 				lvSongs.setAdapter(adapter);
+				
+				if(mSongList.get(0).getDevice().equals(mDeviceName)){
+					Toast.makeText(getActivity().getApplicationContext(), Commons.MSG_TOAST_REQUEST_PLAYING, Toast.LENGTH_SHORT ).show();
+				}
 			}			
 		}
 	}

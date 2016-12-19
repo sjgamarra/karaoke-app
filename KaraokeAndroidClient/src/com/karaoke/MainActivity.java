@@ -38,7 +38,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 	private ViewPager mViewPager;
 	
-	private List<Song> mySongs;
+	//private List<Song> mySongs;
+	
+	//fragmentos
+	private Fragment allSongsFragment = null;
+	private Fragment songsFragment = null;
+	private Fragment mySongsFragment = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +77,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 // When swiping between different app sections, select the corresponding tab.
                 // We can also use ActionBar.Tab#select() to do this if we have a reference to the
                 // Tab.
-//            	Log.d(Commons.TAG, "MainActivity - setSelectedNavigationItem + "+ position);
+            	Log.d(Commons.APP_TAG, "MainActivity - setSelectedNavigationItem + "+ position);
                 actionBar.setSelectedNavigationItem(position);
             }
         });
@@ -139,22 +144,28 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         	Bundle args;
             switch (i) {
                 case 0:
-                	Log.d(Commons.APP_TAG, "MainActivity - AllSongsFragment");
-                	AllSongsFragment allSongsFragment = new AllSongsFragment();
-                	args = new Bundle();
-                	allSongsFragment.setArguments(args);
+                	Log.d(Commons.APP_TAG, "MainActivity - AllSongsFragment - 0");
+                	if(allSongsFragment == null){
+                		allSongsFragment = new AllSongsFragment();
+                		args = new Bundle();
+                    	allSongsFragment.setArguments(args);
+                	}
                     return allSongsFragment;
                 case 1:
-                	Log.d(Commons.APP_TAG, "MainActivity - SongsFragment");
-                	Fragment songsFragment = new SongsFragment();
-                	args = new Bundle();
-                	songsFragment.setArguments(args);
+                	Log.d(Commons.APP_TAG, "MainActivity - SongsFragment - 1");
+                	if(songsFragment==null){
+                		songsFragment = new SongsFragment();
+                    	args = new Bundle();
+                    	songsFragment.setArguments(args);
+                	}
                     return songsFragment;
                 case 2:
-                	Log.d(Commons.APP_TAG, "MainActivity - MySongsFragment");
-                	MySongsFragment mySongsFragment = new MySongsFragment();               	
-                	args = new Bundle();
-                	mySongsFragment.setArguments(args);
+                	Log.d(Commons.APP_TAG, "MainActivity - MySongsFragment - 2");
+                	if(mySongsFragment == null){
+                    	mySongsFragment = new MySongsFragment();               	
+                    	args = new Bundle();
+                    	mySongsFragment.setArguments(args);    		
+                	}
                     return mySongsFragment;
                 default:
                     return null;

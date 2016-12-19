@@ -76,7 +76,8 @@ public class PedidoController {
 						pedido.getCancion().getArtista(), 
 						pedido.getCancion().getGenero(), 
 						pedido.getCancion().getEstado(),
-						pedido.getId());
+						pedido.getId(),
+						pedido.getDispositivoId());
 				songs.add(song);
 			}
 		}catch (Exception e){

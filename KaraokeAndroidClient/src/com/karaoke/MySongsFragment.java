@@ -1,6 +1,5 @@
 package com.karaoke;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -18,7 +17,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,12 +30,13 @@ public class MySongsFragment extends Fragment {
 	private ListView lvSongs;
 	private List<Song> mSongList;
     private SongListAdapter adapter;
-    private Handler handler = new Handler();
+    private Handler handler = null;
     private String mDeviceName;
+    private String mySongsUrl;
+    private BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		
 		Log.d(Commons.APP_TAG, "MySongsFragment - onCreateView");
 		 		
 		View rootView = inflater.inflate(R.layout.fragment_my_songs, container, false);
@@ -52,22 +51,15 @@ public class MySongsFragment extends Fragment {
 		    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 		}
 		
-        BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
-        mDeviceName = myDevice.getName();
-		
 		try{
-			//String mySongsUrl = String.format(Commons.URL_REQUEST_GET,URLEncoder.encode(mDeviceName, "UTF-8"));
-			//sincrono
-//			String response = HttpRequest.get(mySongsUrl).accept("application/json").body();
-//			Gson gson = new Gson();
-//			Type listType = new TypeToken<List<Song>>(){}.getType();
-//			mMySongList = gson.fromJson(response, listType);
-//			adapter = new SongListAdapter(getActivity().getApplicationContext(), mMySongList, true,false);
-//			lvSongs.setAdapter(adapter);
+			mDeviceName = myDevice.getName();
+			mySongsUrl = String.format(Commons.URL_REQUEST_GET,URLEncoder.encode(mDeviceName, "UTF-8"));
+
 			//asincrono
-			//new GetMySongsTask().execute(mySongsUrl);
+			new GetMySongsTask().execute(mySongsUrl);
 			
-			scheduleGetSongs();
+			if(handler == null)
+				scheduleGetSongs();
 		}catch (Exception e){
 			Log.d(Commons.APP_TAG, "GetMySongs - Exception: "+e.getMessage());
 		}
@@ -76,17 +68,11 @@ public class MySongsFragment extends Fragment {
 	}
 	
 	public void scheduleGetSongs() {
+		handler = new Handler();
 	    handler.postDelayed(new Runnable() {
 	        public void run() {
-	        	String mySongsUrl;
-				try {
-					mySongsUrl = String.format(Commons.URL_REQUEST_GET,URLEncoder.encode(mDeviceName, "UTF-8"));
-		            new GetMySongsTask().execute(mySongsUrl);
-		            handler.postDelayed(this, Commons.APP_RECALL);
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+	            new GetMySongsTask().execute(mySongsUrl);
+	            handler.postDelayed(this, Commons.APP_RECALL);
 	        }
 	    }, Commons.APP_RECALL);
 	}
@@ -102,8 +88,7 @@ public class MySongsFragment extends Fragment {
 		}
 
 		protected void onPostExecute(String response) {
-			Log.d(Commons.APP_TAG, "GetMySongs - Response:"+response);
-			
+			//Log.d(Commons.APP_TAG, "GetMySongs - Response:"+response);
 			if (response != null) {
 				Gson gson = new Gson();
 				Type listType = new TypeToken<List<Song>>() {}.getType();

@@ -55,15 +55,13 @@ public class SongsFragment extends Fragment {
         }
         	
 		//Cargar lista de generos
-        List<String> list = new ArrayList<String>();
-        list.add("TODOS");
-        list.add("ROCK");
-        list.add("SALSA");
-        list.add("BALADA");
-        list.add("HIPHOP");
-        list.add("VARIADO");
-                      
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_item,list);  
+//        String genreResponse = HttpRequest.get(Commons.URL_GENRE_GET).accept("application/json").body();
+//        Gson gson = new Gson();
+//		Type listType = new TypeToken<List<String>>() {}.getType();
+//		List<String> genres = gson.fromJson(genreResponse, listType);        
+        
+        //ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_item,genres);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_item,this.getGenres());
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.spGenre.setAdapter(dataAdapter);
 		
@@ -76,13 +74,12 @@ public class SongsFragment extends Fragment {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent arg2) {
 				try{
-					if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-						Log.d(Commons.APP_TAG, "SongsFragment  - onSearch");
+					if (actionId == EditorInfo.IME_ACTION_SEARCH) {					
+						//TODO: perder foco para guardar teclado.
 						
 						//construir url
-						String auxGenre = spGenre.getSelectedItem().toString()=="TODOS"?"all":spGenre.getSelectedItem().toString();
+						String auxGenre = spGenre.getSelectedItem().toString()=="Todos"?"all":spGenre.getSelectedItem().toString();
 						String auxName = etSearch.getText().toString().isEmpty()?"all":etSearch.getText().toString();
-						
 						String genre = URLEncoder.encode(auxGenre, "UTF-8");
 						String name = URLEncoder.encode(auxName, "UTF-8");
 						String songsUrl = String.format(Commons.URL_SONG_GET, genre, name);
@@ -95,22 +92,22 @@ public class SongsFragment extends Fragment {
 							Gson gson = new Gson();
 							Type listType = new TypeToken<List<Song>>() {}.getType();
 							mSongList = gson.fromJson(response, listType);
-						}
-						
-						if(mSongList.isEmpty()){
-							//Mostrar alerta.
-							AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
-							builder
-								.setMessage("No se encontraron resultados.")
-								.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog, int id) {
-										
-									}})
-								.show();
-						}else{
-							adapter = new SongListAdapter(v.getContext(), mSongList, true,true);
-							lvSongs.setAdapter(adapter);
+							
+							if(!mSongList.isEmpty()){
+								//actualizar lista
+								adapter = new SongListAdapter(v.getContext(), mSongList, true,true);
+								lvSongs.setAdapter(adapter);
+							}else{
+								//Mostrar alerta (podria ser un toast)
+								AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
+								builder
+									.setMessage(Commons.MSG_ALERT_NOT_FOUND)
+									.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(DialogInterface dialog, int id) {
+										}})
+									.show();
+							}
 						}
 			            return true;
 			        }
@@ -146,5 +143,19 @@ public class SongsFragment extends Fragment {
 			}
 			
 		}
+	}
+	
+	private List<String> getGenres(){
+		List<String> genres = new ArrayList<String>();
+		try{
+			String genreResponse = HttpRequest.get(Commons.URL_GENRE_GET).accept("application/json").body();
+	        Gson gson = new Gson();
+			Type listType = new TypeToken<List<String>>() {}.getType();
+			genres = gson.fromJson(genreResponse, listType);
+		}catch(Exception e){
+			
+		}
+		genres.add(0, "Todos");
+		return genres;
 	}
 }

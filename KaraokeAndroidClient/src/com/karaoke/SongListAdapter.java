@@ -73,8 +73,9 @@ import android.widget.Toast;
 		if (convertView == null) {
 			holder = new ViewHolder();
 			convertView = View.inflate(mContext, R.layout.item_song_list, null);
-			holder.tvArtist = (TextView) convertView.findViewById(R.id.tv_artist);
+			holder.tvDevice = (TextView) convertView.findViewById(R.id.tv_device);
 			holder.tvName = (TextView) convertView.findViewById(R.id.tv_name);
+			holder.tvArtist = (TextView) convertView.findViewById(R.id.tv_artist);
 			holder.tvGenre = (TextView) convertView.findViewById(R.id.tv_genre);
 			holder.btAction = (Button) convertView.findViewById(R.id.bt_action);
 			convertView.setTag(holder);
@@ -82,9 +83,12 @@ import android.widget.Toast;
 			holder = (ViewHolder) convertView.getTag();
 		}
 		
-		holder.tvArtist.setText(mSongList.get(position).getArtist());
+		holder.tvDevice.setText(mSongList.get(position).getDevice());
 		holder.tvName.setText(mSongList.get(position).getTitle());
+		holder.tvArtist.setText(mSongList.get(position).getArtist());
 		holder.tvGenre.setText(mSongList.get(position).getGenre());
+		
+		holder.tvDevice.setVisibility(mSongList.get(position).getDevice().isEmpty()?View.GONE:View.VISIBLE);
 		
 		//controlando el boton.
 		holder.btAction.setVisibility(mButtonShow ? View.VISIBLE : View.GONE);
@@ -98,8 +102,8 @@ import android.widget.Toast;
 				
 				AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
 				builder
-					.setMessage(mButtonAdd?"¿Desea añadir esta canci\u00F3n a su lista?":"¿Desea eliminar esta canci\u00F3n de su lista?")
-					.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+					.setMessage(mButtonAdd?Commons.MSG_ALERT_ADD_SONG:Commons.MSG_ALERT_DEL_SONG)
+					.setPositiveButton(Commons.MSG_ALERT_YES, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int id) {
 							try{
@@ -112,7 +116,7 @@ import android.widget.Toast;
 								
 							}
 						}})
-					.setNegativeButton("No", null)
+					.setNegativeButton(Commons.MSG_ALERT_NO, null)
 					.show();
 			}
 		});
@@ -134,9 +138,12 @@ import android.widget.Toast;
 			
 			mResponse = Boolean.valueOf(response);
 			if(mResponse){
-				Toast.makeText(mContext, "La canci\u00F3n ha sido agregada.", Toast.LENGTH_SHORT ).show();
+				//Toast.makeText(mContext, "La canci\u00F3n ha sido agregada.", Toast.LENGTH_SHORT ).show();
+				Toast.makeText(mContext, Commons.MSG_TOAST_SONG_ADDED_SUCCESS, Toast.LENGTH_SHORT ).show();
 				mSongList.remove(mSongSelectedPos);
 				notifyDataSetChanged();
+			}else{
+				Toast.makeText(mContext, Commons.MSG_TOAST_SONG_ADDED_FAIL, Toast.LENGTH_SHORT ).show();
 			}
 		}
 	}
@@ -155,16 +162,17 @@ import android.widget.Toast;
 			Log.d(Commons.APP_TAG, "Put - Response:"+response);
 			mResponse = Boolean.valueOf(response);
 			if(mResponse){
-				Toast.makeText(mContext, "La canci\u00F3n ha sido cancelada.", Toast.LENGTH_SHORT ).show();
+				Toast.makeText(mContext, Commons.MSG_TOAST_SONG_CANCELED_SUCCESS, Toast.LENGTH_SHORT ).show();
 				mSongList.remove(mSongSelectedPos);
 				notifyDataSetChanged();
 			}else{
-				Toast.makeText(mContext, "La canci\u00F3n no puede ser cancelada.", Toast.LENGTH_SHORT ).show();
+				Toast.makeText(mContext, Commons.MSG_TOAST_SONG_CANCELED_FAIL, Toast.LENGTH_SHORT ).show();
 			}
 		}
 	}
 
 	class ViewHolder {
+		TextView tvDevice;
 		TextView tvName;
 		TextView tvArtist;
 		TextView tvGenre;
