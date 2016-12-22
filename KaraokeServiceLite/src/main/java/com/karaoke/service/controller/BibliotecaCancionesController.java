@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -125,8 +126,84 @@ public class BibliotecaCancionesController {
 				}
 		}
 		
-		@RequestMapping(value = "/cargarMusicaBatch/{directorio}", method = RequestMethod.POST)
-		public RespuestaBatchDTO cargarMusicaEnBatch(@PathVariable("directorio") String directorio){
+//		@RequestMapping(value = "/cargarMusicaBatch/{directorio}", method = RequestMethod.POST)
+//		public RespuestaBatchDTO cargarMusicaEnBatch(@PathVariable("directorio") String directorio){
+//			RespuestaBatchDTO respuestaBatchDTO = new RespuestaBatchDTO();
+//			
+//			if(!KaraokeUtils.isEmpty(directorio)){
+//				Parametro dirDestinoParam = parametroRepository.findByNombre("DIRECTORIO_CANCIONES").get(0);
+//				Path repoCancionesPath = Paths.get(dirDestinoParam.getValor());
+//				
+//				if(!Files.exists(repoCancionesPath)){
+//		    		//TODO: no se pudo encontrar el directorio de canciones
+//					respuestaBatchDTO.setMensajeError("No se pudo encontrar el directorio repositorio de canciones");
+//					return respuestaBatchDTO;
+//		    	}
+//		    	if(!Files.isReadable(repoCancionesPath) && !Files.isWritable(repoCancionesPath))
+//		    	{
+//		    		//TODO: permisos insuficientes en el directorio de canciones
+//		    		respuestaBatchDTO.setMensajeError("Permisos insuficientes para el directorio repositorio de canciones");
+//					return respuestaBatchDTO;
+//		    	}
+//				
+//				if(repoCancionesPath!=null){
+//					Path origenPath = Paths.get(directorio);
+//					//para recorrer subdirectorios en busca de mas mp3 usar walk
+//					//try(Stream<Path> files = Files.walk(origenPath)){
+//					try(Stream<Path> files = Files.list(origenPath)){
+//						String tipoBatch = parametroRepository.findByNombre("TIPO_BATCH").get(0).getValor();
+//						//recorremos y copiamos todos los mp3 del directorio origen
+//						//se considera que tanto los mp3 y los cdg se encuentran en la misma ubicacion
+//						if(tipoBatch.equalsIgnoreCase("FUENTE_METADATA"))
+//						{
+//							files
+//				        	.filter(path -> (path.toString().toUpperCase().endsWith(".MP3")||path.toString().toUpperCase().endsWith(".CDG")))
+//				        	.peek(path -> insertarDesdeMetadata(path))
+//				        	.peek(path -> copiarMusica(path,repoCancionesPath))
+//				        	.forEach(path -> numCancionesAgregadas++);
+//				        	//.forEach(path -> System.out.println(path));
+//						}else if(tipoBatch.equalsIgnoreCase("FUENTE_NOMBRE_ARCHIVO")) {
+//							files
+//				        	.filter(path -> (path.toString().toUpperCase().endsWith(".MP3")||path.toString().toUpperCase().endsWith(".CDG")))
+//				        	.peek(path -> insertarDesdeNombreArchivo(path))
+//				        	.peek(path -> copiarMusica(path,repoCancionesPath))
+//				        	.forEach(path -> numCancionesAgregadas++);
+//				        	//.forEach(path -> System.out.println(path));
+//						}
+//						else if(tipoBatch.equalsIgnoreCase("SOLO_COPIAR_CANCION")) {
+//							files
+//				        	.filter(path -> (path.toString().toUpperCase().endsWith(".MP3")||path.toString().toUpperCase().endsWith(".CDG")))
+//				        	.peek(path -> copiarMusica(path,repoCancionesPath))
+//				        	.forEach(path -> numCancionesAgregadas++);
+//				        	//.forEach(path -> System.out.println(path));
+//						}
+//				          
+//				    }catch (IOException e){
+//				    	//TODO: hacer algo para mostrar esta exception de Entrada salida de archivos
+//				    	e.printStackTrace();
+//				    	respuestaBatchDTO.setMensajeError("Ocurrió un problema en el proceso batch de canciones");
+//				    }
+//					
+//				}else{
+//					//TODO: hacer algo o mostrar mensaje que no se pudo establecer el path destino
+//					respuestaBatchDTO.setMensajeError("No se pudo establecer el directorio repositorio de canciones");
+//				}
+//							
+//			}else{
+//				//TODO: hacer algo o mostrar mensaje que no se ingreso directorio o directorio vacio
+//				respuestaBatchDTO.setMensajeError("No se ingresó el directorio de origen");
+//			}
+//			respuestaBatchDTO.setNumCancionesAgregados(numCancionesAgregadas);
+//	    	String[] cancionesErrorArray = (String[])cancionesError.toArray();
+//	    	respuestaBatchDTO.setCancionesConError(cancionesErrorArray);
+//	    	respuestaBatchDTO.setNumCancionesError(cancionesErrorArray.length);
+//			return respuestaBatchDTO;
+//		}
+		
+		@RequestMapping(value = "/cargarMusicaBatch", method = RequestMethod.POST)
+		public RespuestaBatchDTO cargarMusicaEnBatch(
+				@RequestParam("directorio") String directorio
+				){
 			RespuestaBatchDTO respuestaBatchDTO = new RespuestaBatchDTO();
 			
 			if(!KaraokeUtils.isEmpty(directorio)){
@@ -193,7 +270,13 @@ public class BibliotecaCancionesController {
 				respuestaBatchDTO.setMensajeError("No se ingresó el directorio de origen");
 			}
 			respuestaBatchDTO.setNumCancionesAgregados(numCancionesAgregadas);
-	    	String[] cancionesErrorArray = (String[])cancionesError.toArray();
+	    	//String[] cancionesErrorArray = (String[])cancionesError.toArray();
+	    	String[] cancionesErrorArray = new String[cancionesError.size()];
+	    	for(int i=0;i<cancionesError.size();i++){
+	    		Object obj = cancionesError.toArray()[i];
+	    		cancionesErrorArray[i]=String.valueOf(obj);
+	    	}
+	    	
 	    	respuestaBatchDTO.setCancionesConError(cancionesErrorArray);
 	    	respuestaBatchDTO.setNumCancionesError(cancionesErrorArray.length);
 			return respuestaBatchDTO;

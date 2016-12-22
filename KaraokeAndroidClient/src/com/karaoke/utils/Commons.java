@@ -2,7 +2,7 @@ package com.karaoke.utils;
 
 public final class Commons {
 	//IP CONTEXTO
-	public static final String CONTEXT_URL = "http://192.168.0.100:8080";
+	public static final String CONTEXT_URL = "http://192.168.0.28:8080";
 	
 	//CONFIGS
 	//public static final String DEVICE_ID = "MESA_1";

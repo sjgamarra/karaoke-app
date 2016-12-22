@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>VAG Karaoke</title>
+
+<script src="jquery-3.1.1.min.js"></script>
+<script src="jquery-ui.min.js"></script>
+<link rel="stylesheet" type="text/css" href="jquery-ui.min.css">
+
+<script src="styles/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<link rel="stylesheet"
+	href="styles/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+
+</head>
+<body>
+	<div class="container">
+		<div>
+			<h1>VAG Karaoke</h1>
+			<hr/>
+		</div>
+		<div>
+			<div id="message" class="alert alert-info alert-dismissible" role="alert">
+			  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			  <strong>Resumen: </strong><br>
+			  <ul>
+			  <li id="num_added"></li>
+			  <li id="num_errors"></li>
+			  </ul>
+			</div>
+				
+			</div>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+				    <h3 class="panel-title">DIRECTORIO</h3>
+				</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<label for="txtPath">Ruta:</label>
+						<input type="text" id="txtPath" class="form-control">
+						<p class="help-block">Copie el directorio de la carpeta en la que se encuentran sus canciones.</p>
+					</div>
+					<button id="btLoad" type="button" class="btn btn-primary">Cargar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#message").hide();
+    $("#btLoad").click(function(){   	
+    	var path = $("#txtPath").val();
+        console.log("URL:"+path);
+        console.log("URLCoded:"+encodeURIComponent(path));
+        
+        $.ajax({
+        	type: 'POST',
+        	//url: "/cargarMusicaBatch/"+encodeURIComponent(path),
+        	url: "/cargarMusicaBatch?directorio="+encodeURIComponent(path),
+	        async: false,
+	        data: {  }
+	    }).done(function(e) {
+	    	console.log("success:"+e);
+	    	var added = e.numCancionesAgregados/2;
+	    	var errors = e.numCancionesError;
+	    	$("#message").show();
+	    	$("#num_added").append("Se han agregado <b>"+added+"</b> canciones.");
+	    	$("#num_errors").append("Se han encontrado <b>"+errors+"</b> errores.");
+	    	if(errors>0){
+	    		$("message").append("<p>"+e.cancionesConError+"</p>");
+	    	}
+	    	
+	    	if(e.mensajeError!==null){
+				$("#message").append("<p>"+e.mensajeError+"</p>");
+	    	}
+	    	
+	    });
+    });
+});
+</script>
