@@ -62,11 +62,27 @@ public class PedidoController {
 			dispositivoId = URLDecoder.decode(dispositivoId, "UTF-8");
 			
 			List<Pedido> pedidos = new ArrayList<Pedido>();
+			List<Pedido> pedidosAux = new ArrayList<Pedido>();
+			
 			if(dispositivoId.equals("all")){
-				//TODO: aca deberia obtener la lista armada de la sala.
+				
+				//TODO: aca deberia obtener la lista armada de la sala.		
 				pedidos = (List<Pedido>) pedidoRepository.findByEstado(1);
+				
+				//jala el de reproduccion
+				pedidosAux = (List<Pedido>) pedidoRepository.findByEstado(2);
+				if(!pedidosAux.isEmpty()){
+					pedidos.add(0, pedidosAux.get(0));
+				}
+				
 			}else{
 				pedidos = (List<Pedido>) pedidoRepository.findByDispositivoIdAndEstado(dispositivoId, 1);
+				
+				//jala el de reproduccion
+				pedidosAux = (List<Pedido>) pedidoRepository.findByDispositivoIdAndEstado(dispositivoId, 2);
+				if(!pedidosAux.isEmpty()){
+					pedidos.add(0, pedidosAux.get(0));
+				}
 			}
 			
 			for(Pedido pedido : pedidos){
