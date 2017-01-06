@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.karaoke.service.entity.Cancion;
@@ -83,6 +85,28 @@ public class CancionController {
 		}
 		
 		return generos;
+	}
+	
+	
+	@RequestMapping(value = "/canciones", method = RequestMethod.GET)
+	public List<Cancion> buscarCancionWeb(
+			@RequestParam("artista") String artista,
+			@RequestParam("titulo") String titulo,
+			@RequestParam("genero") String genero
+			){
+		
+		System.out.println("BuscarCancionWeb:"+artista+":"+titulo+":"+genero);
+		
+		List<Cancion> canciones = new ArrayList<Cancion>();
+	
+		try{
+			//canciones = cancionRepository.findCancion(genero, titulo, artista);
+			canciones = cancionRepository.findByGeneroContainingIgnoreCaseAndTituloContainingIgnoreCaseOrArtistaContainingIgnoreCase(genero, titulo, artista);
+		}catch(Exception e){
+			//log
+		}
+		
+		return canciones;
 	}
 	
 	

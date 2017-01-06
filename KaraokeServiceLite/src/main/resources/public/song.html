@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>VAG Karaoke</title>
+
+<script src="jquery-3.1.1.min.js"></script>
+<script src="jquery-ui.min.js"></script>
+<link rel="stylesheet" type="text/css" href="jquery-ui.min.css">
+
+<script src="styles/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="styles/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+
+</head>
+<body>
+	<div class="container">
+		<div>
+			<h1>VAG Karaoke</h1>
+			<hr />
+		</div>
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h3 class="panel-title">Canciones</h3>
+			</div>
+			<div class="panel-body">
+				<form class="form-inline">
+					<div class="form-group">
+						<label for="txtArtista">Artista</label> <input type="text"
+							class="form-control" id="txtArtista" placeholder="Autor">
+					</div>
+					<div class="form-group">
+						<label for="txtTitulo">Titulo</label> <input type="text"
+							class="form-control" id="txtTitulo" placeholder="Titulo">
+					</div>
+					<div class="form-group">
+						<label for="txtGenero">Genero</label> <input type="text"
+							class="form-control" id="txtGenero" placeholder="Genero">
+					</div>
+					<button type="button" id="btnBuscar" class="btn btn-primary">Buscar</button>
+				</form>
+				<table id="tblCanciones" class="table table-condensed">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Artista</th>
+							<th>Titulo</th>
+							<th>Genero</th>
+							<th>Estado</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+	<div id="mdlCancion" title="Cancion">
+		<form class="form-vertical">
+			<div class="form-group">
+				<label for="txtId">Id</label> <input type="text"
+					class="form-control" id="txtId" placeholder="Id" disabled="disabled">
+			</div>
+			<div class="form-group">
+				<label for="txtArtista">Artista</label> <input type="text"
+					class="form-control" id="txtArtista" placeholder="Autor">
+			</div>
+			<div class="form-group">
+				<label for="txtTitulo">Titulo</label> <input type="text"
+					class="form-control" id="txtTitulo" placeholder="Titulo">
+			</div>
+			<div class="form-group">
+				<label for="txtGenero">Genero</label> <input type="text"
+					class="form-control" id="txtGenero" placeholder="Genero">
+			</div>
+			<div class="form-group">
+				<label for="txtEstado">Estado</label> <input type="text"
+					class="form-control" id="txtEstado" placeholder="Estado">
+			</div>
+			<button type="button" id="btnAceptar" class="btn btn-primary">Guardar</button>
+			<button type="button" id="btnCerrar" class="btn btn-default">Cerrar</button>
+			</form>
+	</div>
+	
+</body>
+</html>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#mdlCancion').hide();
+	$('#btnBuscar').click(function(){
+	   $.ajax({
+         	type: 'GET',
+         	url: "/canciones",
+ 	        async: false,
+ 	        data: {
+ 	        	artista: $('#txtArtista').val(),
+ 	        	titulo: $('#txtTitulo').val(),
+ 	        	genero: $('#txtGenero').val()
+ 	        }
+ 	    }).done(function(e) {
+ 	    	$('#tblCanciones tbody').empty();
+ 	    	for(i=0; i< e.length;i++){
+ 	    		var cancion = e[i];
+ 	    		$('#tblCanciones tbody').append(
+ 	    				"<tr id='"+cancion.id+"'>"+
+ 	    				"<td>"+cancion.id+"</td>"+
+ 	    				"<td>"+cancion.artista+"</td>"+
+ 	    				"<td>"+cancion.titulo+"</td>"+
+ 	    				"<td>"+cancion.genero+"</td>"+
+ 	    				"<td>"+cancion.estado+"</td>"+
+ 	    				"<td><button onclick='verCancion("+cancion.id+
+ 	    						",\""+cancion.artista+"\""+
+ 	    						",\""+cancion.titulo+"\""+
+ 	    						",\""+cancion.genero+"\""+
+ 	    						",\""+cancion.estado+"\""+
+ 	    						");' >Editar</button></td>"+
+ 	    				"</tr>");
+ 	    	}
+ 	    });
+	});
+	
+	$('#btnAceptar').click(function(){
+		var cancion = {
+				id: $('#mdlCancion #txtId').val(),
+ 	        	artista: $('#mdlCancion #txtArtista').val(),
+ 	        	titulo: $('#mdlCancion #txtTitulo').val(),
+ 	        	genero: $('#mdlCancion #txtGenero').val(),
+ 	        	estado: $('#mdlCancion #txtEstado').val()
+		};
+	   $.ajax({
+         	type: 'POST',
+         	url: "/cancion",
+ 	        async: false,
+ 	       	dataType: 'json',
+ 	       	contentType: "application/json",
+ 	        data: JSON.stringify(cancion),
+ 	    }).done(function(e) {
+ 	    	$('#mdlCancion').dialog('close');
+ 	    });
+	});
+	
+	$('#btnCerrar').click(function(){
+		$('#mdlCancion').dialog('close');
+	});
+});
+
+function verCancion(id, artista, titulo, genero, estado){
+	$('#mdlCancion').dialog();
+	$('#mdlCancion #txtId').val(id);
+	$('#mdlCancion #txtArtista').val(artista);
+	$('#mdlCancion #txtTitulo').val(titulo);
+	$('#mdlCancion #txtGenero').val(genero);
+	$('#mdlCancion #txtEstado').val(estado);
+};
+
+</script>
