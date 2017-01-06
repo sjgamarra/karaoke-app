@@ -29,7 +29,19 @@ public class CancionController {
 	
 	@RequestMapping(value = "/cancion", method = RequestMethod.POST)
 	public void crearCancion(@RequestBody Cancion cancion){
-		cancionRepository.save(cancion);
+		
+		Cancion original = cancionRepository.findOne(cancion.getId());
+		
+		if(!cancion.getArtista().isEmpty())
+			original.setArtista(cancion.getArtista());
+		
+		if(!cancion.getTitulo().isEmpty())
+			original.setTitulo(cancion.getTitulo());
+		
+		if(!cancion.getGenero().isEmpty())
+			original.setGenero(cancion.getGenero());
+				
+		cancionRepository.save(original);
 	}
 	
 	/***

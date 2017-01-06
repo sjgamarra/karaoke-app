@@ -23,7 +23,6 @@ $(document).ready(function() {
     });
 	
 	$( "#dialog-notificacionMesa" ).dialog({
-//		position: { my: "center", at: "center", of: "#cdg_border"},
 		autoOpen: false,
 		 zIndex: 2147483647,
 		 appendTo: "#cdg_border",
@@ -36,6 +35,9 @@ $(document).ready(function() {
 	      hide: {
 	        effect: "fadeOut",
 	        duration: 1000
+	      },
+	      open: function(event, ui) {
+	          $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
 	      }
 	 });
 	

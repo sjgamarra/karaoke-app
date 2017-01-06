@@ -8,23 +8,7 @@
 
 <meta name="description" content="Possibly the first and only HTML5/JavaScript CD+G player, showing example content created with free, open source CD+Graphics Magic.">
 
-<title>Karaoke VAG</title>
-
-<style type="text/css">
-body  { background-color:#eeeeee; font-family:arial,sans-serif; width:80%; margin-left:auto; margin-right:auto; }
-.header_box  { background-color:#007777; text-align:center; font-size:24px; font-weight:bold; padding:0.25em;
-               white-space:nowrap; border-color:#111111; border-style:solid; border-width:1px; }
-.left_navigation           { height:100%; float:left; width:150px; background-color:#007777; text-align:center;
-                             white-space:nowrap; border-color:#111111; border-style:solid; border-width:1px; }
-.left_navigation a         { font-size:80%; color:#ffffff; font-weight:bold; display:block; padding:0.5em; margin:0.2em;
-                             border-color:#005555; border-style:solid; border-width:2px; background-color:#009999; }
-.left_navigation a:hover   { color:#ff8800; background-color:#333333; }
-.left_navigation a:active  { color:#aaaaaa; }
-.right_content  { clear:right; background-color:#dddddd; text-align:left; margin-left:152px; font-size:0.8em;
-                  padding:1em; color:#111111; border-color:#111111; border-style:solid; border-width:1px; }
-.footer      { text-align:center; }
-.footer img  { border:0em; }
-</style>
+<title>VAG Karaoke</title>
 
 <script src="cdgmagic_cdgplayer.js"></script>
 <script src="cdgmagic_cdgdecoder_lowresource.js"></script>
@@ -33,6 +17,27 @@ body  { background-color:#eeeeee; font-family:arial,sans-serif; width:80%; margi
 <script src="karaoke.js"></script>
 <link rel="stylesheet" type="text/css" href="jquery-ui.min.css">
 <link rel="stylesheet" type="text/css" href="karaoke.css">
+<script src="styles/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="styles/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+
+<style type="text/css">
+body  { background-color:#eeeeee;}
+.header_box  { background-color:#007777; text-align:center; font-size:24px; font-weight:bold; padding:0.25em;
+                white-space:nowrap; border-color:#111111; border-style:solid; border-width:1px; }
+/* .left_navigation           { height:100%; float:left; width:150px; background-color:#007777; text-align:center; */
+/*                              white-space:nowrap; border-color:#111111; border-style:solid; border-width:1px; } */
+/* .left_navigation a         { font-size:80%; color:#ffffff; font-weight:bold; display:block; padding:0.5em; margin:0.2em; */
+/*                              border-color:#005555; border-style:solid; border-width:2px; background-color:#009999; } */
+/* .left_navigation a:hover   { color:#ff8800; background-color:#333333; } */
+/* .left_navigation a:active  { color:#aaaaaa; } */
+/* .right_content  { clear:right; background-color:#dddddd; text-align:left; margin-left:152px; font-size:0.8em; */
+/*                   padding:1em; color:#111111; border-color:#111111; border-style:solid; border-width:1px; } */
+/* .footer      { text-align:center; } */
+/* .footer img  { border:0em; } */
+</style>
+
+
+
 <script type="text/javascript">
 function Start_CDGPlayer()
 {
@@ -61,41 +66,65 @@ function Start_CDGPlayer()
 
     <!--end left_navigation-->
 
-    <div class="right_content">
+<!--     <div class="right_content"> -->
+    <div class="container">
 <!--         Full and Split Page Cut/Fade modes are planned features still in development. -->
 <!--         <br>All other modes are demonstrated exactly as implemented in Experimental 001b.<br><br><br> -->
-		<center><b>REPRODUCTOR KARAOKE</b></center>
-		<br></br>
-        <center><!-- <center> is probably evil, but at least it WORKS... TODO: Determine the proper margin-fu to banish said evil.-->
-        <!-- Note: The audio player is above media display because some default interfaces have controls that extend past the top of the player. -->
-<!--         <audio id="cdg_audio" style="width:648px"> -->
-        <audio id="cdg_audio" style="width:324px">
-        To use the JavaScript Subcode Graphics Player,<br>you must use an HTML5 audio/canvas compatible browser. [audio]
-        </audio>
-<!--         <div id="cdg_border" style="width:324px; height:216px; background-color:#000000;" ondblclick="toggle_2x_mode();"> -->
-<!--         <div id="cdg_border" style="width:648px; height:432px; background-color:#000000;"> -->
-        <div id="cdg_border" style="width:324px; height:216px; background-color:#000000;">
-<!--         <div id="cdg_border" style="background-color:#000000;"> -->
-<!--         	<canvas id="cdg_canvas" width="600" height="432" > -->
-        	<canvas id="cdg_canvas" width="288" height="192" >
-            To use the JavaScript Subcode Graphics Player,<br>you must use an HTML5 audio/canvas compatible browser. [canvas]
-            </canvas>
-            <div id="dialog-notificacionMesa" hidden="hidden">
-			  <p>
-			    <span id="notificacionMesa" style="float:left; margin:0 7px 50px 0;"></span>
-			  </p>
+<!-- 		<center><b>REPRODUCTOR KARAOKE</b></center> -->
+		<div>
+			<h1>VAG Karaoke</h1>
+			<hr />
+		</div>
+		
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h3 class="panel-title">REPRODUCTOR</h3>
 			</div>
-<!--             <div id="notificacionMesa" class="notificacionMesa" style="height:10px; font-size: 200%;"></div> -->
-        </div>
-		<div><button type="button" id="btnCancelar">Cancelar</button></div>
-        <div id="cdg_status" style="width:320px; padding:2px; margin:4px; text-align:left; font-family:arial; font-size:1.0em/*0.8em*/; color:#00dddd; background-color:#444444">
-        Please select a file to play...
-        </div>
-        </center>
-    </div><!--end right_content-->
+			<div class="panel-body">
+			<center>
+				<!-- <center> is probably evil, but at least it WORKS... TODO: Determine the proper margin-fu to banish said evil.-->
+	        	<!-- Note: The audio player is above media display because some default interfaces have controls that extend past the top of the player. -->
+	<!--         <audio id="cdg_audio" style="width:648px"> -->
+	
+	<!--         <div id="cdg_border" style="width:324px; height:216px; background-color:#000000;" ondblclick="toggle_2x_mode();"> -->
+	<!--         <div id="cdg_border" style="width:648px; height:432px; background-color:#000000;"> -->
+		        
+		        <div id="cdg_border" style="width:324px; height:216px; background-color:#000000;">
+		<!--         <div id="cdg_border" style="background-color:#000000;"> -->
+		<!--         	<canvas id="cdg_canvas" width="600" height="432" > -->
+		        	<canvas id="cdg_canvas" width="288" height="192" >
+		            To use the JavaScript Subcode Graphics Player,<br>you must use an HTML5 audio/canvas compatible browser. [canvas]
+		            </canvas>
+		        </div>
+				
+				<div>
+					<audio id="cdg_audio" style="width:324px">
+			        	To use the JavaScript Subcode Graphics Player,<br>you must use an HTML5 audio/canvas compatible browser. [audio]
+			        </audio>
+		        </div>
+		        
+				<div>
+					<button type="button" id="btnCancelar" class="btn btn-primary">Siguiente</button>
+				</div>
+				
+		        <div id="cdg_status" style="width:320px; padding:2px; margin:4px; text-align:left; font-family:arial; font-size:1.0em/*0.8em*/; color:#00dddd; background-color:#444444" class="hidden">
+		        	Por favor, seleccione un archivo a reproducir...
+		        </div>
+		        
+		        <div id="dialog-notificacionMesa" title="VAG KARAOKE">
+		        <div>
+		        	<p id="notificacionMesa" style="font-size: 40px;" class="text-center">Center aligned text.</p>
+<!-- 					<span id="notificacionMesa" style="float:left; margin:0 7px 50px 0; font-size: 40px;" class=""></span> -->
+		        </div>
+				
+				</div>
+        	</center>			
+		</div>
+	</div>
+   </div><!--end right_content-->
 
 <div class="footer">
-<!-- <br><a href="http://sourceforge.net/projects/cdgmagic"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=379569&amp;type=9" width="80" height="15" alt="Get CD+Graphics Magic at SourceForge.net. Fast, secure and Free Open Source software downloads" /></a> -->
+
 </div>
 
 </body>
