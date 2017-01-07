@@ -76,12 +76,12 @@ public class PedidoController {
 				
 				while(!pedidos.isEmpty()){
 					String mesa = dispositivos[contador++];
-					
 					for(int i=0; i<pedidos.size();i++){
 						Pedido p = pedidos.get(i);
 						if(p.getDispositivoId().equals(mesa)){
 							pedidosOrdenado.add(p);
 							pedidos.remove(i);
+							break;
 						}
 					}
 					
