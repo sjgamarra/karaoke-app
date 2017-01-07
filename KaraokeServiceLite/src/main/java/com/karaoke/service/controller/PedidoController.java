@@ -220,7 +220,7 @@ public class PedidoController {
 		{
 			//TODO: crear un pedido aleatorio
 			List<Cancion> lstCancion =  cancionRepository.findTop100ByOrderByIdAsc();
-			int posRandom = randomDesdeRango(0,lstCancion.size()-1);
+			int posRandom = randomDesdeRango(0,lstCancion.size());
 			//int posRandom = (int)Math.random()*(lstCancion.size()-1);
 			Cancion cancionRandom = lstCancion.get(posRandom);
 			pedido = new Pedido();
