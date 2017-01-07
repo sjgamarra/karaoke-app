@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -19,7 +18,6 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.parser.mp3.Mp3Parser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,27 +46,31 @@ public class BibliotecaCancionesController {
 	private Set<String> cancionesError = new HashSet<>();
 	
 	//Al copiar se sobreescribiran los archivos con el mismo nombre
-		private void copiarMusica(Path origen,Path destino){
+		private boolean copiarMusica(Path origen,Path destino){
+			boolean result = true;
 			if(Files.exists(origen) ){
 				if(Files.isReadable(origen))
 				{
 					try {
 						Files.copy(origen, destino.resolve(origen.getFileName()),REPLACE_EXISTING, COPY_ATTRIBUTES);
-						
 					} catch (IOException e) {
 						//TODO: hacer algo para mostrar esta exception que no se pudo copiar
+						result = false;
 						e.printStackTrace();
 						cancionesError.add(origen.getFileName().toString());
 					}
 				}else{
 					//TODO: no se tienen suficientes para copiar los archivos de origen
+					result = false;
 					System.out.println("Insuficientes Permisos para copiar archivo de origen");
 					cancionesError.add(origen.getFileName().toString());
 				}
 			}else{
 				//TODO:  directorio origen no existe
+				result = false;
 				cancionesError.add(origen.getFileName().toString());
 			}
+			return result;
 		}
 		
 
@@ -107,23 +109,37 @@ public class BibliotecaCancionesController {
 	        	// TODO Excepcion al abrir archivo para obtener metadata
 	        	e.printStackTrace();
 	        	cancionesError.add(pathArchivo.getFileName().toString());
-	        }
+	        } catch(Exception e){
+				cancionesError.add(pathArchivo.getFileName().toString());
+			}
 		}
 		
-		private void insertarDesdeNombreArchivo(Path pathArchivo){
-				if(pathArchivo.toString().toUpperCase().endsWith(".MP3"))
+		private boolean insertarDesdeNombreArchivo(Path pathArchivo){
+			boolean result = true;
+			try{
+				String extension = ".MP3";
+				if(pathArchivo.toString().toUpperCase().endsWith(extension))
 				{
 					
 				    Cancion cancion = new Cancion();
-				    cancion.setNombreArchivo(KaraokeUtils.checkAtributo(pathArchivo.getFileName().toString()));
+				    String nombreArchivo = pathArchivo.getFileName().toString();
+				    cancion.setNombreArchivo(KaraokeUtils.checkAtributo(nombreArchivo));
+				    
+				    String nombreSinExtension = nombreArchivo.substring(0,nombreArchivo.length() - extension.length());
+				    String metadata[] = nombreSinExtension.split(" - ");
 				    
 				    //Se insertará sólo título y artista obteniendo desde el nombre del archivo
-				    //cancion.setTitulo(metadata.get("title"));
-				    //cancion.setArtista(KaraokeUtils.checkAtributo(metadata.get("xmpDM:artist")));
+				    cancion.setTitulo(metadata[1]);
+				    cancion.setArtista(metadata[0]);
 				    
 				    //grabar cancion en repostorio
 				    cancionRepository.save(cancion);
 				}
+			}catch(Exception e){
+				cancionesError.add(pathArchivo.getFileName().toString());
+				result = false;
+			}
+			return result;
 		}
 		
 //		@RequestMapping(value = "/cargarMusicaBatch/{directorio}", method = RequestMethod.POST)
@@ -225,8 +241,8 @@ public class BibliotecaCancionesController {
 				if(repoCancionesPath!=null){
 					Path origenPath = Paths.get(directorio);
 					//para recorrer subdirectorios en busca de mas mp3 usar walk
-					//try(Stream<Path> files = Files.walk(origenPath)){
-					try(Stream<Path> files = Files.list(origenPath)){
+					//try(Stream<Path> files = Files.list(origenPath)){
+					try(Stream<Path> files = Files.walk(origenPath)){
 						String tipoBatch = parametroRepository.findByNombre("TIPO_BATCH").get(0).getValor();
 						//recorremos y copiamos todos los mp3 del directorio origen
 						//se considera que tanto los mp3 y los cdg se encuentran en la misma ubicacion
@@ -241,8 +257,8 @@ public class BibliotecaCancionesController {
 						}else if(tipoBatch.equalsIgnoreCase("FUENTE_NOMBRE_ARCHIVO")) {
 							files
 				        	.filter(path -> (path.toString().toUpperCase().endsWith(".MP3")||path.toString().toUpperCase().endsWith(".CDG")))
-				        	.peek(path -> insertarDesdeNombreArchivo(path))
-				        	.peek(path -> copiarMusica(path,repoCancionesPath))
+				        	.filter(path -> (insertarDesdeNombreArchivo(path)))
+				        	.filter(path -> (copiarMusica(path,repoCancionesPath)))
 				        	.forEach(path -> numCancionesAgregadas++);
 				        	//.forEach(path -> System.out.println(path));
 						}
