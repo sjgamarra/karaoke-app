@@ -50,6 +50,14 @@ public class PedidoManager {
 			}
 		}
 		
+		public int getCurrentCounter(){
+			return counter;
+		}
+		
+		public String[] getDispositivosArray(){
+			return dispositivos;
+		}
+		
 		public String getNextDispositivo(){
 			if(counter == (dispositivos.length))
 				counter = 0;

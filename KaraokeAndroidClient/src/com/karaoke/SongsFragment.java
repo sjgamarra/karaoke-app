@@ -148,10 +148,14 @@ public class SongsFragment extends Fragment {
 	private List<String> getGenres(){
 		List<String> genres = new ArrayList<String>();
 		try{
-			String genreResponse = HttpRequest.get(Commons.URL_GENRE_GET).accept("application/json").body();
-	        Gson gson = new Gson();
-			Type listType = new TypeToken<List<String>>() {}.getType();
-			genres = gson.fromJson(genreResponse, listType);
+//			String genreResponse = HttpRequest.get(Commons.URL_GENRE_GET).accept("application/json").body();
+//	        Gson gson = new Gson();
+//			Type listType = new TypeToken<List<String>>() {}.getType();
+//			genres = gson.fromJson(genreResponse, listType);
+			
+			genres.add("Salsa");
+			genres.add("Rock");
+			genres.add("Varios");
 		}catch(Exception e){
 			
 		}

@@ -69,6 +69,29 @@ public class PedidoController {
 				//TODO: aca deberia obtener la lista armada de la sala.		
 				pedidos = (List<Pedido>) pedidoRepository.findByEstado(1);
 				
+				int contador = pedidoManager.getCurrentCounter();
+				String[] dispositivos = pedidoManager.getDispositivosArray();
+				
+				List<Pedido> pedidosOrdenado =new ArrayList<Pedido>();
+				
+				while(!pedidos.isEmpty()){
+					String mesa = dispositivos[contador++];
+					
+					for(int i=0; i<pedidos.size();i++){
+						Pedido p = pedidos.get(i);
+						if(p.getDispositivoId().equals(mesa)){
+							pedidosOrdenado.add(p);
+							pedidos.remove(i);
+						}
+					}
+					
+					if(contador == (dispositivos.length))
+						contador = 0;
+				}
+				
+				//sobrecarga
+				pedidos = pedidosOrdenado;
+				
 				//jala el de reproduccion
 				pedidosAux = (List<Pedido>) pedidoRepository.findByEstado(2);
 				if(!pedidosAux.isEmpty()){
