@@ -24,6 +24,8 @@ $(document).ready(function() {
 	
 	$( "#dialog-notificacionMesa" ).dialog({
 		autoOpen: false,
+		width: 'auto',
+		maxWidth: 600,
 		 zIndex: 2147483647,
 		 appendTo: "#cdg_border",
 		 //appendTo: "#cdg_canvas",
@@ -75,18 +77,15 @@ function ejecutarSiguientePedido(){
     	    	actualizarPedido(currentPedido);
     	    	if(pedido.dispositivoId)
     	    	{
-//    	    		$( "#notificacionMesa" ).text( pedido.dispositivoId );
-//    	    		$( "#notificacionMesa" ).show().delay(5000).fadeOut();
-    	    		$( "#notificacionMesa" ).text( pedido.dispositivoId );
-    	    		//$( "#dialog-notificacionMesa" ).dialog( "open" );
-    	    		//$( "#dialog-notificacionMesa" ).dialog("open").delay(9000).dialog( "close" );
+    	    		//$( "#notificacionMesa" ).text( pedido.dispositivoId );
+    	    		$( "#notificacionMesa" ).empty();
+    	    		$( "#notificacionMesa" ).append(pedido.dispositivoId+"<br/>");
+    	    		$( "#notificacionMesa" ).append("\""+cancion.titulo+"\"");
     	    		$( "#dialog-notificacionMesa" ).dialog("open");
     	    		setTimeout(function(){
     	    			$( "#dialog-notificacionMesa" ).dialog("close");
     	    		}, duracionNotificacion);
     	    	}
-    	    	
-    	// });
     });
 }
 

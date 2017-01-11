@@ -2,7 +2,11 @@ package com.karaoke.service.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.karaoke.service.entity.Cancion;
 import com.karaoke.service.entity.Pedido;
@@ -36,5 +40,11 @@ public interface PedidoRepository extends CrudRepository<Pedido, Long>{
 	
 	
 	public Pedido findByDispositivoIdAndCancion(String dispositivoId, Cancion cancion);
+	
+	//delete all
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM Pedido p WHERE p.estado=3 or p.estado=4")
+	public void clearPedidos();
 	
 }

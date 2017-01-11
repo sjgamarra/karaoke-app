@@ -153,9 +153,22 @@ public class SongsFragment extends Fragment {
 //			Type listType = new TypeToken<List<String>>() {}.getType();
 //			genres = gson.fromJson(genreResponse, listType);
 			
-			genres.add("Salsa");
+			genres.add("Balada");
+			genres.add("Ballenato");
+			genres.add("Cumbia");
+			genres.add("Electronica");
+			genres.add("Infantil");
+			genres.add("Latina");
+			genres.add("Morenada");
+			genres.add("Pop");
+			genres.add("Ranchera");
+			genres.add("Rap");
+			genres.add("Regge");
+			genres.add("Reggeton");
 			genres.add("Rock");
-			genres.add("Varios");
+			genres.add("Salsa");
+			genres.add("Ska");
+			genres.add("Tropical");
 		}catch(Exception e){
 			
 		}

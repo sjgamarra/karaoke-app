@@ -58,13 +58,17 @@ public class CancionController {
 		List<Song> songs = new ArrayList<Song>();
 		
 		try{
-			genero = genero.equals("all")?"":URLDecoder.decode(genero, "UTF-8");
+			genero = genero.equals("all")?"": URLDecoder.decode(genero, "UTF-8");
 			nombre = nombre.equals("all")?"": URLDecoder.decode(nombre, "UTF-8");
 			
-			System.out.println("parametros:"+genero+":"+nombre);
-			
-			//List<Cancion> canciones = (List<Cancion>) cancionRepository.findByGeneroContainingIgnoreCaseAndTituloContainingIgnoreCaseOrArtistaContainingIgnoreCase(genero, nombre, nombre);
-			List<Cancion> canciones = (List<Cancion>) cancionRepository.findCancion(genero, nombre, nombre);
+			List<Cancion> canciones = new ArrayList<Cancion>();
+			if(genero.isEmpty() && nombre.isEmpty()){
+				canciones = (List<Cancion>) cancionRepository.findTop1000ByOrderByIdAsc();
+			}else{
+				canciones = (List<Cancion>) cancionRepository.findCancion(genero, nombre, nombre);
+			}
+						
+			//List<Cancion> canciones = (List<Cancion>) cancionRepository.findCancion(genero, nombre, nombre);
 			
 			for(Cancion cancion : canciones){
 				Song song = new Song(
@@ -112,8 +116,7 @@ public class CancionController {
 		List<Cancion> canciones = new ArrayList<Cancion>();
 	
 		try{
-			//canciones = cancionRepository.findCancion(genero, titulo, artista);
-			canciones = cancionRepository.findByGeneroContainingIgnoreCaseAndTituloContainingIgnoreCaseOrArtistaContainingIgnoreCase(genero, titulo, artista);
+			canciones = cancionRepository.findByGeneroContainingIgnoreCaseAndTituloContainingIgnoreCaseAndArtistaContainingIgnoreCase(genero, titulo, artista);
 		}catch(Exception e){
 			//log
 		}

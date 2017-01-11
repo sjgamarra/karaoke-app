@@ -7,12 +7,16 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.karaoke.service.repository.ParametroRepository;
+import com.karaoke.service.repository.PedidoRepository;
 
 @SpringBootApplication
 public class KaraokeServiceLiteApplication extends WebMvcConfigurerAdapter{
 
 	@Autowired
     private ParametroRepository parametroRepository;
+	
+	@Autowired
+    private PedidoRepository pedidoRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(KaraokeServiceLiteApplication.class, args);
@@ -23,8 +27,7 @@ public class KaraokeServiceLiteApplication extends WebMvcConfigurerAdapter{
 		String directorioCanciones = parametroRepository.findByNombre("DIRECTORIO_CANCIONES").get(0).getValor();
 	    registry.addResourceHandler("/biblioteca/**")
 	    	.addResourceLocations("file:///" + directorioCanciones);
-		
-//	    registry.addResourceHandler("/biblioteca/**")
-//	            .addResourceLocations("file:///E:/Canciones/");
+	    
+	    pedidoRepository.clearPedidos();
 	}
 }
